@@ -5,6 +5,7 @@
 	<projects>
 		<project>CitiTradeWebService</project>
 		<project>CitiTradeEJB</project>
+		<project>CitiTradeJPA</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

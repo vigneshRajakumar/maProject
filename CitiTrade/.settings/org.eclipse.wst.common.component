@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="CitiTrade">
         <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
-        <dependent-module archiveName="CitiTradeWebService.war" deploy-path="/" handle="module:/resource/CitiTradeWebService/CitiTradeWebService">
+        <dependent-module archiveName="CitiTradeWeb.war" deploy-path="/" handle="module:/resource/CitiTradeWeb/CitiTradeWeb">
             <dependent-object/>
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -9,7 +9,11 @@
             <dependent-object/>
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="java-json.jar" deploy-path="lib" handle="module:/classpath/lib/lib/java-json.jar">
+        <dependent-module archiveName="CitiTradeClient.jar" deploy-path="/" handle="module:/resource/CitiTradeClient/CitiTradeClient">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="java-json.jar" deploy-path="lib" handle="module:/classpath/lib/EarContent/lib/java-json.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="CitiTradeJPA.jar" deploy-path="/lib" handle="module:/resource/CitiTradeJPA/CitiTradeJPA">

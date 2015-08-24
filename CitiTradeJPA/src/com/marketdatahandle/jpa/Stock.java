@@ -27,7 +27,7 @@ public class Stock implements Serializable {
 	private double bid;
 	@Column(name="ask")
 	private double ask;
-	@Column(name="day_hight")
+	@Column(name="day_high")
 	private double dailyHigh;
 	@Column(name="day_low")
 	private double yearlyLow;

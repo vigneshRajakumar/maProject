@@ -1,6 +1,7 @@
 package com.tradingcontroller.ejb;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +18,7 @@ import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.Marshaller;
 
 import com.marketdatahandler.ejb.CitiTradeMarketDataHandler;
 import com.tradingcontroller.TradeObject;
@@ -72,6 +74,21 @@ public class AutomatedTradingController implements MessageListener {
         
         return null;
 	}
+	
+	private static String tradeToXML(TradeObject trade) {
+		try ( StringWriter out = new StringWriter (); )
+        {
+            Marshaller marshaller = context.createMarshaller ();
+            marshaller.marshal (trade, out);
+            return out.toString ();
+        }
+        catch (Exception ex)
+        {
+            LOGGER.log (Level.WARNING, "Couldn't build Trade message.", ex);
+        }
+        
+        return null;
+	}
 		
     public void onMessage(Message message) {
 
@@ -80,6 +97,7 @@ public class AutomatedTradingController implements MessageListener {
 			{
 				TextMessage textMessage = (TextMessage)message;
 				System.out.println("MessageBean Received:" + textMessage.getText());
+				//This object will have only the symbol and the amount
 				TradeObject trade = tradeFromXML(textMessage.getText());
 				//jmsContext.createProducer().send(brokerQueue, newMessage);
 			}

@@ -54,6 +54,8 @@ public class UserController implements IUserController {
 
 		// use the encrypted password
 		String encryptedPwd = cryptWithMD5(password);
+		
+		System.out.println(encryptedPwd);
 		TypedQuery<User> query = em
 				.createQuery(
 						"SELECT user_a FROM User AS user_a WHERE user_a.uname = :username and user_a.passwd =:password",

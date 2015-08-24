@@ -17,7 +17,7 @@ import com.trade.jpa.Trade;
 @Stateless
 public class TradeController implements ITradeController {
 
-	@PersistenceContext(name="CitiTradeJPA-ejbPU")
+	@PersistenceContext
 	private EntityManager em;
 
 
@@ -29,7 +29,7 @@ public class TradeController implements ITradeController {
 	@Override
 	public List<Trade> getAllTradeByUserID(int userID) {
 
-		Query query = em.createQuery("SELECT trade_a FROM Trade AS trade_a where trade_a.user_ID = :userID");
+		Query query = em.createQuery("SELECT trade_a FROM Trade AS trade_a where trade_a.trader_id = :userID");
 		query.setParameter("userID", userID);
 
 		// Execute the query, and get a collection of beans back.

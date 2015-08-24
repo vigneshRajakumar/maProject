@@ -1,0 +1,108 @@
+.panel-ct {
+  border-color: #399CA9;
+}
+
+.panel-ct>.panel-heading {
+  color: #1C4E54;
+  background-color: #7ED5E0;
+  border-color: #399CA9;
+}
+
+.panel-ls {
+  border-color: #FFA500;
+}
+
+.panel-ls>.panel-heading {
+  color: #4C3200;
+  background-color: #FFC04D;
+  border-color: #FFA500;
+  border-radius: 0;
+}
+
+#stockGraph {
+  z-index: 1000;
+  position: absolute;
+  display: none;
+}
+
+.flot-chart {
+  width: 400px;
+  height: 400px;
+}
+
+.flot-chart-content {
+  width: 360px;
+  height: 360px;
+}
+
+
+/***************
+   Left Part
+***************/
+
+.left_list {
+  top: 0;
+  left: 0;
+  width: 201px;
+  height: 92vh;
+  float: left;
+  border-radius: 0 !important;
+}
+
+.hover_stock {
+  background-color: #FFE6B8;
+}
+
+#stocksList tr {
+  cursor: pointer;
+}
+
+#stocks_filter {
+  margin: 10px 5px 0 -120px;
+}
+
+#stocks_filter input {
+  width: 140px;
+}
+
+/***************
+   Right Part
+***************/
+
+.right_top {
+  height: 40vh;
+}
+
+.right_bottom {
+
+}
+
+.top_news {
+  left: 0;
+  right: 0;
+  height: 40px;
+  margin: 0 -30px 20px -30px;
+  padding: 12px;
+  /*background-color: #81CFE0;*/
+  background-color: #47c3d3;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+}
+
+span.up {
+  color: #ee3524;
+}
+
+span.down {
+  color: #387C2C;
+}
+
+.history {
+  height: 300px;
+}
+
+#history_filter {
+  float: left;
+  text-align: left;
+}

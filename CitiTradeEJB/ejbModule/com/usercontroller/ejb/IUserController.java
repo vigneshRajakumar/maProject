@@ -23,4 +23,7 @@ public interface IUserController {
 	*/
 	
 	public List<Trade> getUserTrades(User userObj);
+
+	boolean registerUser(String name, String passwd, double initBalance,
+			String type);
 }

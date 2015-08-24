@@ -27,7 +27,7 @@ public class TestTradeController extends HttpServlet {
 
 		List<Trade> tradeList = tradeController.getAllTradeByUserID(1);
 		for (Trade t: tradeList) {
-			System.out.println("The available Trade are "+t.getTrade_ID()+" "+t.getNum_Shares()+" "+t.getPrice_PerShare()) ;
+			System.out.println("The available Trade are "+t.getStockList().getSName() +" "+t.getStockList().getSymbol()+" "+t.getTrade_ID()+" "+t.getNum_Shares()+" "+t.getPrice_PerShare()) ;
 		}
 	}
 

@@ -82,6 +82,8 @@ public class TestStockListController extends HttpServlet {
 			        // use comma as separator
 				String[] stockList = line.split(cvsSplitBy);
 
+				stockList[0] = stockList[0].replaceAll("\"", "");
+				stockList[1] = stockList[1].replaceAll("\"", "");
 				obj.setStock_ID(counter);
 				obj.setSymbol(stockList[0]);
 				obj.setSName(stockList[1]);

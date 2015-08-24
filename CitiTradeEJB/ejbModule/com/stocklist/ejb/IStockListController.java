@@ -1,4 +1,4 @@
-package com.stocklistcontroller.ejb;
+package com.stocklist.ejb;
 
 import java.util.List;
 

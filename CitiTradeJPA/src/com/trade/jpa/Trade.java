@@ -18,9 +18,9 @@ public class Trade implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int trade_id; 
-	private int trader_id ; 
-	//private StockList stockList;
-	private int stock_id ; 
+	private int trader_id; 
+	//private int stock_id ; 
+	private StockList stockList;
 	private int algo_id ;  
 	private String trade_type ; 
 	private int num_shares ;
@@ -36,14 +36,25 @@ public class Trade implements Serializable {
 		return this.trade_id;
 	}  
 
-	public int getTrader_ID() {
+	public int getTrader_id() {
 		return this.trader_id;
 	}
 
-	public void setTrader_ID(int index) {
+	public void setTrader_id(int index) {
 		this.trader_id = index;
 	}
-		
+	
+	@OneToOne
+	@JoinColumn(name="stock_id")
+	public StockList getStockList(){
+		return this.stockList;
+	}
+	
+	public void setStockList(StockList stocklist){
+		this.stockList = stocklist;
+	}
+	
+	/*
 	public int getStock_id() {
 		return this.stock_id;
 	}
@@ -51,7 +62,7 @@ public class Trade implements Serializable {
 	public void setStock_id(int id) {
 		this.stock_id = id;
 	}
-
+*/
 	public int getAlgo_ID() {
 		return this.algo_id;
 	}

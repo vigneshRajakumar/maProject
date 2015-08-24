@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import com.trade.jpa.Trade;
 
@@ -27,10 +26,10 @@ public class TradeController implements ITradeController {
 	}
 
 	@Override
-	public List<Trade> getAllTradeByUserID(int userID) {
+	public List<Trade> getAllTradeByUserID(int trader_id) {
 
-		Query query = em.createQuery("SELECT trade_a FROM Trade AS trade_a where trade_a.trader_id = :userID");
-		query.setParameter("userID", userID);
+		Query query = em.createQuery("SELECT trade_a FROM Trade AS trade_a where trade_a.trader_id = :trader_id");
+		query.setParameter("trader_id", trader_id);
 
 		// Execute the query, and get a collection of beans back.
 		List<Trade> listTrades = query.getResultList();

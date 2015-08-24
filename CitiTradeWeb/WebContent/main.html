@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The best online algorithm trading platform">
+    <meta name="author" content="CitiTrade">
+
+    <title>CitiTrade - Dashboard</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Datatable CSS -->
+    <link href="css/dataTables.bootstrap.min.css" rel="stylesheet"></link>
+
+    <!-- Custom CSS -->
+    <link href="css/helper.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="main.html">CitiTrade</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <div id="navbar" class="navbar-inverse navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li role="presentation" class="active"><a href="#">Dashboard</a></li>
+                    <li role="presentation"><a href="history.html">History</a></li>
+                    <li role="presentation"><a href="trade.html">Trade</a></li>
+                    <li role="presentation"><a href="help.html">Help</a></li>
+                </ul>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell fa-fw"></i>
+                            <span class="badge badge-corner"></span>
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">
+                                    <div>
+                                        <i class="fa fa-tasks fa-fw"></i> New Task
+                                        <span class="pull-right text-muted small">4 minutes ago</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" href="#">
+                                    <strong>See All Alerts</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-alerts -->
+                    </li>
+                    <!-- /.dropdown -->
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i>
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            </li>
+                            <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="index.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-user -->
+                    </li>
+                    <!-- /.dropdown -->
+                </ul>
+                <!-- /.navbar-top-links -->
+            </div>
+        </nav>
+        <!-- Heading nav -->
+
+        <div class="panel panel-ls left_list">
+            <!-- Default panel contents -->
+            <div class="panel-heading">List of Stocks</div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table id="stocks" class="table " cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Column1</th>
+                            <th>Column2</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stocksList">
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.table-responsive -->
+
+        </div>
+        <!-- /.panel-default -->
+
+        <div id="page-wrapper">
+            <div class="top_news">
+                US Market Closed
+                Aug 21, 2015
+                CAC 40  4630.99
+                <span class="up">-152.56 ▼ ▲-3.19%</span>
+                NIKKEI 225  19435.83
+                <span class="up">-597.69 ▼-2.98%</span>
+                FTSE100  6187.65
+                <span class="up">-180.24 ▼-2.83%</span>
+            </div>    
+            <!-- /.extremes -->
+
+            <div class="row right_top">
+
+                <div class="col-lg-8 col-md-8">
+                    <div class="col-lg-12">
+                        <div class="panel panel-ct">
+                            <div class="panel-heading">Your Trading History</div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="history" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th width="35%">Name</th>
+                                                <th width="25%">Value</th>
+                                                <th width="40%">Change Net / %</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="historyList">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.table-responsive -->
+                            </div>
+                            <!-- /.panel-body -->
+                        </div>
+                        <!-- /.panel -->
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
+                <!-- /history table -->
+
+                <div class="col-lg-4 col-md-4">
+                    <div class="panel panel-red">
+                        <div class="panel-heading">
+                            Trade Now !
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="stock">Stock:</label>
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control" id="stock" placeholder="Enter stock name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="amount">Amount:</label>
+                                    <div class="col-sm-9"> 
+                                      <input type="number" min="1" class="form-control" id="amount" placeholder="Enter max shares">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="method">Method:</label>
+                                    <div class="col-sm-9">
+                                        <div class="radio">
+                                            <label><input type="radio" name="method">Two Moving Averages</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" name="method">Bollinger Bands</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" name="method">Price Breakout</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group"> 
+                                    <div class="col-sm-offset-5 col-sm-3">
+                                        <button type="submit" class="btn btn-danger btn-circle trade_button">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <a href="trade.html">
+                            <div class="panel-footer">
+                                <span class="pull-left">See details</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!-- /.col-lg-4 -->
+            </div>
+            <!-- /.row -->
+
+            <div class="row right_bottom">
+                <div class="col-lg-12 col-md-12">
+                    <div class="panel panel-ct">
+                        <div class="panel-heading">Your Portfolio</div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="portfolio" cellspacing="0" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th width="35%">Name</th>
+                                            <th width="25%">Value</th>
+                                            <th width="40%">Change Net / %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="portfolioList">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+
+                <div id="stockGraph">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    The Graph
+                                </div>
+                                <!-- /.panel-heading -->
+                                <div class="panel-body">
+                                    <div class="flot-chart">
+                                        <div class="flot-chart-content" id="flot-line-chart-multi"></div>
+                                    </div>
+                                </div>
+                                <!-- /.panel-body -->
+                            </div>
+                            <!-- /.panel -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /#stockGraph -->
+
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="js/jquery-2.1.4.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <! -- Datatable JavaScript -->
+    <script src="js/jquery.dataTables.min.js"></script>
+    <script src="js/dataTables.bootstrap.min.js"></script>
+
+    <!-- Flot Charts JavaScript -->
+    <script src="js/flot/excanvas.js"></script>
+    <script src="js/flot/jquery.flot.js"></script>
+    <script src="js/flot/jquery.flot.pie.js"></script>
+    <script src="js/flot/jquery.flot.resize.js"></script>
+    <script src="js/flot/jquery.flot.time.js"></script>
+    <script src="js/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="js/flot/flot-data.js"></script>
+    
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/helper.js"></script>
+
+</body>
+
+</html>

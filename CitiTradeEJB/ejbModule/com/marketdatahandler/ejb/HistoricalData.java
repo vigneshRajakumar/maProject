@@ -1,6 +1,12 @@
 package com.marketdatahandler.ejb;
 
-public class HistoricalData {
+import java.io.Serializable;
+
+public class HistoricalData implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String symbol;
 	private double open;
 	private double close;

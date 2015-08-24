@@ -10,7 +10,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import com.cititrade.jpa.algorithms.Algo;
+import com.algorithm.jpa.Algo;
+
 
 @Stateless
 public class AlgoController implements IAlgoController{

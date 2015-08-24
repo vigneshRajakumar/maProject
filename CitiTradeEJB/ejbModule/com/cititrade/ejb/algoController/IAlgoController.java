@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import com.cititrade.jpa.algorithms.Algo;
+import com.algorithm.jpa.Algo;
+
+
 
 @Local
 public interface IAlgoController {

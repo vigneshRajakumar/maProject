@@ -100,6 +100,8 @@ public class AutomatedTradingController implements MessageListener {
 				//This object will have only the symbol and the amount
 				TradeObject trade = tradeFromXML(textMessage.getText());
 				//jmsContext.createProducer().send(brokerQueue, newMessage);
+				
+				
 			}
 			
 		} catch (JMSException e) {

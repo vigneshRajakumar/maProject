@@ -44,10 +44,26 @@ public class AutomatedTradingController {
 	}
 	
 	public void RecordTrade(Trade trade) {
-		
+	
+		/*
+
+		try {
+			if (message instanceof TextMessage)
+			{
+				TextMessage textMessage = (TextMessage)message;
+				System.out.println("MessageBean Received:" + textMessage.getText());
+				//This object will have only the symbol and the amount
+				TradeObject trade = tradeFromXML(textMessage.getText());
+				//jmsContext.createProducer().send(brokerQueue, newMessage);
+			}
+			
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
-
+	*/
+	}
 	public ArrayList<bollingerStockWrapper> getStockList() {
 		return stockList;
 	}

@@ -1,32 +1,43 @@
 package com.tradingcontroller.ejb;
 
-import javax.ejb.Stateless;
+import javax.ejb.ActivationConfigProperty;
+import javax.ejb.MessageDriven;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
-import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Queue;
-import javax.jms.TextMessage;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-@Stateless
-public class TradingController implements ITradingController {
+/**
+ * Message-Driven Bean implementation class for: TradingController
+ */
+@MessageDriven(
+		activationConfig = { @ActivationConfigProperty(
+				propertyName = "destination", propertyValue = "TCQueue"), @ActivationConfigProperty(
+				propertyName = "destinationType", propertyValue = "javax.jms.Queue")
+		}, 
+		mappedName = "TCQueue")
+
+
+public class TradingController implements MessageListener {
     	
 	public void sendMsg() throws NamingException{
-		
+
+		TradingController tcController = new TradingController();
+
 		InitialContext context = new InitialContext();
 		ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("jms/TradeConnectionFactory");
 
 		Queue ATQueue = (Queue) context.lookup("jms/ATQueue");
-		Queue TCQueue = (Queue) context.lookup("jms/TCQueue");
+		//Queue queue02 = (Queue) context.lookup("jms/Queue02");
 
 		JMSContext jmsContext = connectionFactory.createContext();
 
 		//use jmsContext to create a consumer for message coming to queue02, and message listener will be this instance
-		//jmsContext.createConsumer(TCQueue).setMessageListener(tcController);
+		//jmsContext.createConsumer(queue02).setMessageListener(mdbClient);
 
 		//to send message
 		JMSProducer jmsProducer = jmsContext.createProducer();
@@ -39,22 +50,8 @@ public class TradingController implements ITradingController {
      * @see MessageListener#onMessage(Message)
      */
     public void onMessage(Message message) {
-    	try
-		{
-			if (message instanceof TextMessage)
-			{
-				TextMessage textMessage = (TextMessage)message;
-				System.out.println("Received: " + textMessage.getText());
-			}
-		}
-		catch (JMSException ex)
-		{
-			System.err.println("JMSException occurred: " + ex);
-		}
-		catch (Exception ex)
-		{
-			System.err.println("Some other exception occurred: " + ex);
-		}
+        // TODO Auto-generated method stub
+        
     }
 
 }

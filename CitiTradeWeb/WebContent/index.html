@@ -77,9 +77,9 @@
                         <h3>The best algo-trading platform</h3>
                     </div>
 
-                    <form class="login" method="post" action="main.html">
-                        <input type="text" placeholder="username" name="username"><br>
-                        <input type="password" placeholder="password" name="password"><br>
+                    <form class="login" method="post" action="rest/rest/login">
+                        <input type="text" placeholder="username" name="username" required><br>
+                        <input type="password" placeholder="password" name="password" required><br>
                         <input type="submit" value="Login">
                         <label id="register"><a data-toggle='modal' data-target='#regForm'>Create an account</a></label>
                     </form>
@@ -212,7 +212,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                    <h4 class="modal-title" id="myModalLabel">Registration</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">

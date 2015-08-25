@@ -111,10 +111,15 @@ public class AutomatedTradingController {
 			return Math.sqrt(sumDiff / data.size());
 		}
 
+		public void updateEnterInfo(OrderType type, double price) {
+			enterPrice = price;
+			shortOrLong = OrderType.SHORT;
+
+			numOfSharesTraded = (long) (totalAmount / price);
+		}
+
 		public boolean isShortEnter(Stock marketStockInfo) {
 			if ((movingAverage - marketStockInfo.getAsk()) > (BAND_WIDTH * standardDeviation)) {
-				enterPrice = marketStockInfo.getAsk();
-				shortOrLong = OrderType.SHORT;
 				return true;
 			} else
 				return false;
@@ -129,8 +134,32 @@ public class AutomatedTradingController {
 			return false;
 		}
 
-		public boolean isExit() {
+		public boolean isExit(Stock marketStockInfo) {
+			double ask = marketStockInfo.getAsk();
+			double bid = marketStockInfo.getBid();
+			double percentagePL;
+			if (shortOrLong.equals(OrderType.SHORT)) {
+				percentagePL = checkLossOrGainPercentage(ask, enterPrice);
+				if ((percentagePL < (-stopLoss))
+						|| (percentagePL > percentageProfit)) {
+					exitPrice = ask;
+					return true;
+				}
+			} else if (shortOrLong.equals(OrderType.LONG)) {
+				percentagePL = checkLossOrGainPercentage(enterPrice, bid);
+				if ((percentagePL < (-stopLoss))
+						|| (percentagePL > percentageProfit)) {
+					exitPrice = bid;
+					return true;
+				}
+			}
 			return false;
+		}
+
+		// get the percentage of gain or loss
+		private double checkLossOrGainPercentage(double buyPrice,
+				double sellPrice) {
+			return ((sellPrice - buyPrice) * numOfSharesTraded) / totalAmount;
 		}
 
 		public String getStockSymbol() {
@@ -216,7 +245,7 @@ public class AutomatedTradingController {
 
 	public void StartMonitoring() {
 		monitorPriceToEnter();
-		//monitorPriceToExit();
+		// monitorPriceToExit();
 	}
 
 	/*
@@ -231,24 +260,28 @@ public class AutomatedTradingController {
 			@Override
 			public void run() {
 				ArrayList<Integer> changedStatusIndex = new ArrayList<Integer>();
-				for (int i = 0; i < enteredstockList.size(); i++) {
+				for (int i = 0; i < beforeStockList.size(); i++) {
 					bollingerStockWrapper trade = beforeStockList.get(i);
 					Order order = beforeEnterOrders.get(i);
 					Stock newInfo = marketDataHandler.getStockBySymbol(trade
 							.getStockSymbol());
 					if (trade.isShortEnter(newInfo)) {
 						// enter short
+						// TODO SEND MESSAGE, IF SUCESS
 						// update order
 						order.setType(OrderType.SHORT);
 						order.setStatus(OrderStatus.ENTERED);
 						em.persist(order);
+						trade.updateEnterInfo(OrderType.SHORT, newInfo.getAsk());
 						changedStatusIndex.add(i);
 
 					} else if (trade.isLongEnter(newInfo)) {
 						// enter long
+						// TODO SEND MESSAGE, IF SUCESS
 						order.setType(OrderType.LONG);
 						order.setStatus(OrderStatus.ENTERED);
 						em.persist(order);
+						trade.updateEnterInfo(OrderType.LONG, newInfo.getBid());
 						changedStatusIndex.add(i);
 
 					}
@@ -264,50 +297,42 @@ public class AutomatedTradingController {
 	 * entered status if the condition hit, 1. send message to order broker, 2.
 	 * recorder trade, 3. change order status
 	 */
-/*	public void monitorPriceToExit() {
+	public void monitorPriceToExit() {
 		// will there be any data lost???????????????
-		numOfSharesTraded = (long) (totalAmount / enterPrice);
+		// numOfSharesTraded = (long) (totalAmount / enterPrice);
 
 		Timer timer = new Timer();
 		// Schedule to run after every 1 minute
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				Stock newInfo = marketDataHandler.getStockBySymbol(stockSymbol);
-				double ask = newInfo.getAsk();
-				double bid = newInfo.getBid();
+				ArrayList<Integer> changedStatusIndex = new ArrayList<Integer>();
+				for (int i = 0; i < enteredstockList.size(); i++) {
+					bollingerStockWrapper trade = enteredstockList.get(i);
+					Order order = EnteredOrders.get(i);
+					Stock newInfo = marketDataHandler.getStockBySymbol(trade
+							.getStockSymbol());
 
-				// SHORT EXIT
-				double shortPL;
-				double longPL;
-				if ((shortPL = checkLossOrGainPercentage(ask)) > stopLoss
-						|| shortPL > percentageProfit) {
-					exitPrice = ask;
-					// TODO add trade
-
-				}
-				// LONG EXIT
-				else if ((longPL = checkLossOrGainPercentage(bid)) > stopLoss
-						|| longPL > percentageProfit) {
-					exitPrice = bid;
-					// TODO add trade
+					// SHORT EXIT
+					double shortPL;
+					double longPL;
+					// SHORT EXIT
+					if (trade.isExit(newInfo)) {
+						// TODO SEND MESSAGE
+						// TODO ADD TRADE
+						// TODO UPDATE DATABASE
+					}
 				}
 
-			}
-
-			// get the percentage of gain or loss
-			public double checkLossOrGainPercentage(double marketPrice) {
-				return ((marketPrice - enterPrice) * numOfSharesTraded)
-						/ totalAmount;
 			}
 		}, MONITOR_TIME_INTERVAL);
-	}*/
-/*
-	public ArrayList<bollingerStockWrapper> getStockList() {
-		return stockList;
 	}
 
-	public void setStockList(ArrayList<bollingerStockWrapper> stockList) {
-		this.stockList = stockList;
-	}*/
+	/*
+	 * public ArrayList<bollingerStockWrapper> getStockList() { return
+	 * stockList; }
+	 * 
+	 * public void setStockList(ArrayList<bollingerStockWrapper> stockList) {
+	 * this.stockList = stockList; }
+	 */
 }

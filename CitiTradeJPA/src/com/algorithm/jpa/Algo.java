@@ -35,7 +35,7 @@ public class Algo implements Serializable {
      * Get the algorithm name
      * @return algo_name - Algorithm name
      */
-    public String getAlgo_Name() {
+    public String getAlgo_name() {
 		return this.algo_name;
 	}
 
@@ -44,7 +44,7 @@ public class Algo implements Serializable {
      * Set the algorithm name
      * @param algo_name Algorithm name
      */
-	public void setAlgo_Name(String name) {
+	public void setAlgo_name(String name) {
 		this.algo_name = name;
 	}
 

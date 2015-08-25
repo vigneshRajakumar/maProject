@@ -32,14 +32,9 @@ public class TradingController implements MessageListener {
 		ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("jms/TradeConnectionFactory");
 
 		Queue ATQueue = (Queue) context.lookup("jms/ATQueue");
-		//Queue queue02 = (Queue) context.lookup("jms/Queue02");
 
 		JMSContext jmsContext = connectionFactory.createContext();
 
-		//use jmsContext to create a consumer for message coming to queue02, and message listener will be this instance
-		//jmsContext.createConsumer(queue02).setMessageListener(mdbClient);
-
-		//to send message
 		JMSProducer jmsProducer = jmsContext.createProducer();
 
 		String messageToSend = "testetest";

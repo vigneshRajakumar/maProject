@@ -1,6 +1,8 @@
 package com.tradingcontroller.ejb;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
@@ -15,20 +17,27 @@ import javax.naming.NamingException;
 @Stateless
 public class TradingController implements ITradingController {
     	
+	@Inject 
+	JMSContext jmsContext;
+	
+	@Resource(mappedName="jms/ATQueue")
+	Queue ATQueue;
+	
 	public void sendMsg() throws NamingException{
+		
 		
 		TradingController tcController = new TradingController();
 		InitialContext context = new InitialContext();
 		ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("jms/TradeConnectionFactory");
 
 		Queue ATQueue = (Queue) context.lookup("jms/ATQueue");
-		Queue TCQueue = (Queue) context.lookup("jms/TCQueue");
 
 		JMSContext jmsContext = connectionFactory.createContext();
 
 		//use jmsContext to create a consumer for message coming to queue02, and message listener will be this instance
 		//jmsContext.createConsumer(TCQueue).setMessageListener(tcController);
-
+		 
+		
 		//to send message
 		JMSProducer jmsProducer = jmsContext.createProducer();
 

@@ -20,7 +20,7 @@ public class Trade implements Serializable {
 	private int trade_id; 
 	private int trader_id; 
 	//private int stock_id ; 
-	private StockList stockList;
+	private StockList stockList;  
 	private int algo_id ;  
 	private String trade_type ; 
 	private int num_shares ;
@@ -36,11 +36,11 @@ public class Trade implements Serializable {
 		return this.trade_id;
 	}  
 
-	public int getTrader_id() {
+	public int gettrader_id() {
 		return this.trader_id;
 	}
 
-	public void setTrader_id(int index) {
+	public void settrader_id(int index) {
 		this.trader_id = index;
 	}
 	

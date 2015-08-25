@@ -4,11 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-/**
- * Entity implementation class for Entity: UserType
- *
- */
-
 @Entity
 @Table(schema="ct_project", name="ct_usertype")
 public class UserType implements Serializable {
@@ -16,8 +11,8 @@ public class UserType implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-    private int type_id; //typeID
-    private String user_type; //userType
+    private int type_id; 
+    private String user_type; 
 	   
     public void setType_ID(int id) {
         this.type_id = id;

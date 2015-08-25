@@ -87,11 +87,11 @@ public class User implements Serializable {
 	//the user can retrieve his trades from database Table - userType
 	@OneToOne
 	@JoinColumn(name="user_type")
-	public UserType getUserTypeString(){
+	public UserType getuser_type(){
 		return this.userType;
 	}
 		
-	public void setUserTypeString(UserType userTypeObj){
+	public void setuser_type(UserType userTypeObj){
 		this.userType = userTypeObj;
 	}
 	

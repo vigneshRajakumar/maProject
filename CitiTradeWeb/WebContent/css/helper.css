@@ -389,6 +389,10 @@ table.dataTable thead .sorting:after {
   font-size: 10px;
 }
 
+.table-responsive {
+	overflow-x: hidden;
+}
+
 /**********************
       Help.html
 **********************/

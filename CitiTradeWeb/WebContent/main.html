@@ -99,12 +99,12 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            <li><a data-toggle='modal' data-target='#userSettings'><i class="fa fa-user fa-fw"></i> User Profile</a>
                             </li>
-                            <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                            <li id="userSettingsButton"><a data-toggle='modal' data-target='#userSettings'><i class="fa fa-gear fa-fw"></i> Settings</a>
                             </li>
                             <li class="divider"></li>
-                            <li><a href="index.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            <li id="logout"><a><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                             </li>
                         </ul>
                         <!-- /.dropdown-user -->
@@ -125,8 +125,7 @@
                 <table id="stocks" class="table " cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th>Column1</th>
-                            <th>Column2</th>
+                            <th>Symbol</th>
                         </tr>
                     </thead>
                     <tbody id="stocksList">
@@ -139,15 +138,14 @@
         <!-- /.panel-default -->
 
         <div id="page-wrapper">
-            <div class="top_news">
-                US Market Closed
+            <div class="top_news"><!-- 
                 Aug 21, 2015
                 CAC 40  4630.99
                 <span class="up">-152.56 ▼ ▲-3.19%</span>
                 NIKKEI 225  19435.83
                 <span class="up">-597.69 ▼-2.98%</span>
                 FTSE100  6187.65
-                <span class="up">-180.24 ▼-2.83%</span>
+                <span class="up">-180.24 ▼-2.83%</span> -->
             </div>    
             <!-- /.extremes -->
 
@@ -163,9 +161,10 @@
                                     <table class="table table-hover" id="history" cellspacing="0" width="100%">
                                         <thead>
                                             <tr>
-                                                <th width="35%">Name</th>
-                                                <th width="25%">Value</th>
-                                                <th width="40%">Change Net / %</th>
+                                                <th width="25%">Stock Symbol</th>
+                                                <th width="10%">Type</th>
+                                                <th width="20%"># Shares</th>
+                                                <th width="30%">Price per Share</th>
                                             </tr>
                                         </thead>
                                         <tbody id="historyList">
@@ -293,6 +292,45 @@
 
     </div>
     <!-- /#wrapper -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="userSettings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <ul class="nav nav-tabs nav-justified" id="userSettingsTabs">
+                                <li class="active"><a href="#tabProfile" data-toggle="tab">Profile</a></li>
+                                <li><a href="#tabSettings" data-toggle="tab">Settings</a></li>
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div class="tab-pane fade in active" id="tabProfile">
+                                    <h4>Home Tab</h4>
+                                    <p>Lorem ipsum dolor sit amet, </p>
+                                </div>
+                                <div class="tab-pane fade" id="tabSettings">
+                                    <h4>Settings Tab</h4>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.col-lg-12 -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
     <!-- jQuery -->
     <script src="js/jquery-2.1.4.min.js"></script>

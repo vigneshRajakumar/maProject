@@ -1,5 +1,15 @@
 $(document).ready(function() {
 
+	/*var url = window.location.href;
+	if (url.indexOf("index.html") >= 0) {
+		checkUserOnload();
+	} else {
+		checkUserStatus();
+	}*/
+
+    $("#userSettingsButton").on("click", function () {
+        $("#userSettingsTabs li:nth-child(2) a").click();
+    });
 });
 
 //Loads the correct sidebar on window load,
@@ -119,3 +129,40 @@ $(function () {
         $(".register_button_hide").click();
     });
 });
+
+$("#logout").on("click", function () {
+	$.ajax({
+		type: "GET",
+	    url: "rest/rest/logout",
+	    success: function () {
+		  window.location.href = "index.html";
+	  }
+	});
+});
+
+
+function checkUserStatus () {
+	$.ajax({
+		  type: "GET",
+		  url: "rest/rest/verification",
+		  success: function (data) {
+			  console.log("checkUserStatus: " + data);
+			  if (data == "false") {
+				  window.location.href = "index.html";
+			  }
+		  }
+	});
+}
+
+function checkUserOnload () {
+	$.ajax({
+	      type: "GET",
+	      url: "rest/rest/verification",
+	      success: function (data) {
+	    	  console.log("checkUserOnload: " + data);
+	    	  if(data == "true") {
+	    		  window.location.href = "main.html";
+	    	  }
+	      }
+	});
+}

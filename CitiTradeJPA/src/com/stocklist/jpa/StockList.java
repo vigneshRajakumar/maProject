@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+/**
+ * Entity implementation class for Entity: Stock
+ *
+ */
+
 @Entity
 @Table(schema="ct_project", name="ct_stocklist")
 public class StockList implements Serializable {

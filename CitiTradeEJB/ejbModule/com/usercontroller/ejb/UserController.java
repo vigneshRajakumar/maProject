@@ -39,7 +39,7 @@ public class UserController implements IUserController {
 			newU.setBalance(initBalance);
 			newU.setUname(name);
 			newU.setPasswd(pwd);
-			newU.setuser_type(uType);
+			newU.setUserTypeString(uType);
 			em.persist(newU);
 			
 			return true;

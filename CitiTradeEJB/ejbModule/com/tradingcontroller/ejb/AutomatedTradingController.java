@@ -47,6 +47,7 @@ public class AutomatedTradingController {
 		
 	}
 
+
 	public ArrayList<bollingerStockWrapper> getStockList() {
 		return stockList;
 	}

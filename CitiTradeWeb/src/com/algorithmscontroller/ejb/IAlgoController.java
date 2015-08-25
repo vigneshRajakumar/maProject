@@ -1,11 +1,10 @@
-package com.cititrade.ejb.algoController;
+package com.algorithmscontroller.ejb;
 
 import java.util.List;
 
 import javax.ejb.Local;
 
 import com.algorithm.jpa.Algo;
-
 
 
 @Local

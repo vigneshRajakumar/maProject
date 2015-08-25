@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import com.stocklist.jpa.StockList;
+
 /**
  * Entity implementation class for Entity: Trades
  *
@@ -16,8 +18,9 @@ public class Trade implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int trade_id; 
-	private int user_id ; 
-	private int stock_id ; 
+	private int trader_id; 
+	//private int stock_id ; 
+	private StockList stockList;
 	private int algo_id ;  
 	private String trade_type ; 
 	private int num_shares ;
@@ -33,21 +36,33 @@ public class Trade implements Serializable {
 		return this.trade_id;
 	}  
 
-	public int getUser_ID() {
-		return this.user_id;
+	public int getTrader_id() {
+		return this.trader_id;
 	}
 
-	public void setUser_ID(int index) {
-		this.user_id = index;
+	public void setTrader_id(int index) {
+		this.trader_id = index;
 	}
-	public int getStock_ID() {
+	
+	@OneToOne
+	@JoinColumn(name="stock_id")
+	public StockList getStockList(){
+		return this.stockList;
+	}
+	
+	public void setStockList(StockList stocklist){
+		this.stockList = stocklist;
+	}
+	
+	/*
+	public int getStock_id() {
 		return this.stock_id;
 	}
 
-	public void setStock_ID(int index) {
-		this.stock_id = index;
+	public void setStock_id(int id) {
+		this.stock_id = id;
 	}
-
+*/
 	public int getAlgo_ID() {
 		return this.algo_id;
 	}

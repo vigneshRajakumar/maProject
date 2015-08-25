@@ -35,9 +35,7 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
    
 	@Inject 
 	JMSContext jmsContext;
-	
-	@EJB
-	CitiTradeMarketDataHandler marketDataHandler;
+
 	@EJB 
 	AutomatedTradingController autoTradingController;
 
@@ -49,6 +47,7 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 	
 	private static JAXBContext context;
     private static TradeMessenger tradeMessenger;
+    private static final String ALGO_BB = "BB";
     static 
     {
         try
@@ -70,10 +69,15 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 				System.out.println("MessageBean Received:" + textMessage.getText());
 				//This object will have only the symbol and the amount
 				TC_ATObject obj = TradingController.tradeFromXML(textMessage.getText());
+				if(obj.getAlgo().equals(ALGO_BB)) {
+					if(!autoTradingController.isMonitoring()) {
+						autoTradingController.StartMonitoring();
+						autoTradingController.setMonitoring(true);
+					}
+					autoTradingController.startNewTrade(obj.getSymbol(), obj.getLoss(), obj.getProfit(), obj.getAmtToTrade());
+				}
 			}
-			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

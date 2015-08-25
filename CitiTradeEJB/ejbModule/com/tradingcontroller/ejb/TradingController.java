@@ -34,7 +34,7 @@ public class TradingController implements ITradingController {
 	public void sendInputValues(String symbol, double amt, double profit,
 			double loss, String method) {
 		
-		TC_ATObject newObj = new TC_ATObject(symbol , amt , profit , loss );
+		TC_ATObject newObj = new TC_ATObject(symbol , amt , profit , loss , method );
 		
 		String message = "";
 		message = tradeToXML(newObj);

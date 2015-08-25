@@ -1,6 +1,7 @@
 package com.tradingcontroller.ejb;
 
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -18,7 +19,9 @@ import com.tradingcontroller.mq.TradeMessenger;
 				@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
 		})
 public class AutomatedTradingOBMessagebean implements MessageListener {
-
+	
+	@EJB
+	AutomatedTradingController automatedTradingController;
     /**
      * Default constructor. 
      */
@@ -34,6 +37,7 @@ public class AutomatedTradingOBMessagebean implements MessageListener {
     	if(message instanceof TextMessage) {
     		TextMessage textMsg = (TextMessage)message;
     		TradeObject trade = TradeMessenger.parseTradeMessage(textMsg);
+    		automatedTradingController.RecordTrade(trade);
     	}
     }
 

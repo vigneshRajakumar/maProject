@@ -45,16 +45,26 @@ public class TestUserController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		User userObj = testGetUserByLogin("trader" , "trader");
+		
+		//boolean isgood = userController.registerUser("lol", "lol", 0.0, "trader" , "userFirstname" , "userLastname" , "useremail");
+		//System.out.println(isgood);
+		//User userObj = testGetUserByLogin("trader" , "trader");
+		//System.out.println(userObj.getUserType().getUser_Type());
+		
+		User userObj = userController.getUserByUsername("lol");
+		System.out.println(userObj.getUser_ID());
+		
+		User userObj2 = userController.getUserByID(11);
+		System.out.println(userObj2.getUname());
 		
 		//userObj.setPasswd("changePassword");
 		//testUpdateUserInfo(userObj) ;
 		
-		userObj.setBalance(99);
-		testUpdateUserInfo(userObj) ;
+		//userObj.setBalance(99);
+		//testUpdateUserInfo(userObj) ;
 		
-		userObj.setProfit_Lost(-99);
-		testUpdateUserInfo(userObj) ; 
+		//userObj.setProfit_Lost(-99);
+		//testUpdateUserInfo(userObj) ; 
 		
 		//List<Trade> tradeList = userObj.getUserTrades();
 		

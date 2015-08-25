@@ -19,6 +19,11 @@ public class UserType implements Serializable {
     private int type_id; //typeID
     private String user_type; //userType
 	   
+    
+    public UserType(){
+    	this.type_id = 1;
+    	this.user_type = "Trader";
+    }
     public void setType_ID(int id) {
         this.type_id = id;
     }
@@ -29,12 +34,12 @@ public class UserType implements Serializable {
         return this.type_id;
     }  
     
-    public String getUser_Type() {
+    public String getuser_type() {
 		return this.user_type;
 	}
 
  
-	public void setUser_Type(String type) {
+	public void setuser_type(String type) {
 		this.user_type = type;
 	}
 }

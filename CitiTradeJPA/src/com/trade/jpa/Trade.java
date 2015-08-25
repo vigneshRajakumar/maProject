@@ -22,11 +22,20 @@ public class Trade implements Serializable {
 	//private int stock_id ; 
 	private StockList stockList;
 	private int algo_id ;  
+	private Order order;
 	private String trade_type ; 
 	private int num_shares ;
 	private double price_pershare ; 
-	private Order order;
-	
+	private double profit_lost ;
+		
+
+	public double getprofit_lost() {
+		return profit_lost;
+	}
+
+	public void setprofit_lost(double profit_lost) {
+		this.profit_lost = profit_lost;
+	}
 
 	public void setTrade_ID(int id) {
 		this.trade_id = id;
@@ -98,6 +107,7 @@ public class Trade implements Serializable {
 	}
 
 	@ManyToOne
+	@JoinColumn(name="order_id")
 	public Order getOrder() {
 		return order;
 	}

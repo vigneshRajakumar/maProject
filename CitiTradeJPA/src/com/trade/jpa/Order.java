@@ -7,15 +7,10 @@ import javax.persistence.*;
 
 import com.marketdatahandle.jpa.Stock;
 
-
-
-
 /**
  * Entity implementation class for Entity: Order
  *
  */
-
-
 
 @Entity
 @Table(schema = "ct_project", name = "ct_orders")

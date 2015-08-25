@@ -39,31 +39,7 @@ public class TestStockListController extends HttpServlet {
 		return stockListObj;
 	}
 	
-	public void printLine(){
-		
-		BufferedReader br = null;
-
-		try {
-
-			String sCurrentLine;
-
-			br = new BufferedReader(new FileReader("sample.txt"));
-
-			while ((sCurrentLine = br.readLine()) != null) {
-				System.out.println(sCurrentLine);
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null)br.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-	
+	/*
 	public void runFile(StockList obj) {
 
 		String csvFile = "C:\\Users\\Lenovo\\Documents\\GitHub\\maProject\\AMEXcompanylist.csv";
@@ -117,7 +93,7 @@ public class TestStockListController extends HttpServlet {
 		System.out.println("Done");
 	  }
 		
-
+*/
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		StockList obj = testGetStockListByName();

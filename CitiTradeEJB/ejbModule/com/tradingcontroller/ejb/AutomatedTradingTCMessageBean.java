@@ -38,6 +38,8 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 	
 	@EJB
 	CitiTradeMarketDataHandler marketDataHandler;
+	@EJB 
+	AutomatedTradingController autoTradingController;
 
 	@Resource(mappedName="jms/TCQueue")	
 	Queue TCQueue;

@@ -7,8 +7,13 @@
   
         
         <properties>
+<<<<<<< HEAD
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+=======
             <property name="eclipselink.ddl-generation" value="none"/>
             <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-table"/>
+>>>>>>> 98da264b3ec91ff598b62c144d6287b9a83ece90
         </properties>
     </persistence-unit>
 

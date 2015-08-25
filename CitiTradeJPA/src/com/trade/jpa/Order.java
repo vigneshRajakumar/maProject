@@ -37,11 +37,14 @@ public class Order implements Serializable {
 	
 	@Column(name = "order_status")
 	@Enumerated(EnumType.STRING)
-	private OrderStatus status;// "BEFORE ENTER" "ENTERED" "EXIT"
+	private OrderStatus status;// "BEFORE_ENTER" "ENTERED" "EXIT"
 	@Column(name = "loss_percentage")
 	private Double lossPercentage;
 	@Column(name = "profit_percentage")
 	private Double profitPercentage;
+	
+	private int trader_id;
+	private int algo_id;
 
 	// all the trades under this order id
 	private ArrayList<Trade> allTrades;
@@ -115,6 +118,22 @@ public class Order implements Serializable {
 
 	public void setType(OrderType type) {
 		this.type = type;
+	}
+
+	public int getTrader_id() {
+		return trader_id;
+	}
+
+	public void setTrader_id(int trader_id) {
+		this.trader_id = trader_id;
+	}
+
+	public int getAlgo_id() {
+		return algo_id;
+	}
+
+	public void setAlgo_id(int algo_id) {
+		this.algo_id = algo_id;
 	}
 
 }

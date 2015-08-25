@@ -25,8 +25,11 @@ public class TradingController implements ITradingController {
 	
 	public void sendMsg() throws NamingException{
 		
+<<<<<<< HEAD
 		
 		TradingController tcController = new TradingController();
+=======
+>>>>>>> 75c1d58bf24a7be35c84eba7e8a7d099e3441a0d
 		InitialContext context = new InitialContext();
 		ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("jms/TradeConnectionFactory");
 

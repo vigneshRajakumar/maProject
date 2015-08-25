@@ -1,5 +1,7 @@
 package com.tradingcontroller;
 
+import javax.jms.Message;
+import javax.jms.MessageListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
@@ -8,9 +10,9 @@ import java.util.TimerTask;
 import javax.ejb.EJB;
 
 import com.marketdatahandle.jpa.Stock;
-import com.marketdatahandler.ejb.CitiTradeMarketDataHandler;
 import com.marketdatahandler.ejb.HistoricalData;
 import com.marketdatahandler.ejb.MarketDataHandlerLocal;
+
 
 public class BolingerThread extends Thread {
 	private String symbol;
@@ -164,5 +166,4 @@ public class BolingerThread extends Thread {
 			}
 		}, MONITOR_TIME_INTERVAL);
 	}
-
 }

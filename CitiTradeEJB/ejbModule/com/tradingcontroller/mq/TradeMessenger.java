@@ -1,4 +1,4 @@
-package com.citi.trading.mq;
+package com.tradingcontroller.mq;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -10,8 +10,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import com.citi.trading.Trade;
-import com.citi.trading.jms.PointToPointClient;
+import com.tradingcontroller.TradeObject;
+import com.tradingcontroller.jms.PointToPointClient;
 
 public class TradeMessenger
     extends PointToPointClient
@@ -28,7 +28,7 @@ public class TradeMessenger
     {
         try
         {
-            context = JAXBContext.newInstance (Trade.class);
+            context = JAXBContext.newInstance (TradeObject.class);
         }
         catch (Exception ex)
         {
@@ -56,7 +56,7 @@ public class TradeMessenger
     Provides an XML representation of the given trade, suitable for use 
     as the body of a JMS message.
     */
-    public static String tradeToXML (Trade trade)
+    public static String tradeToXML (TradeObject trade)
     {
         try ( StringWriter out = new StringWriter (); )
         {
@@ -76,7 +76,7 @@ public class TradeMessenger
     Factory method for a JMS text message with the contents of the 
     given trade represented in XML.
     */
-    public TextMessage createTradeMessage (Trade trade)
+    public TextMessage createTradeMessage (TradeObject trade)
     {
         try
         {
@@ -93,12 +93,12 @@ public class TradeMessenger
     /**
     Parses an e XML representation of a trade, and returns the Trade object.
     */
-    public static Trade tradeFromXML (String text)
+    public static TradeObject tradeFromXML (String text)
     {
         try ( StringReader in = new StringReader (text); )
         {
             Unmarshaller unmarshaller = context.createUnmarshaller ();
-            return (Trade) unmarshaller.unmarshal (in);
+            return (TradeObject) unmarshaller.unmarshal (in);
         }
         catch (Exception ex)
         {
@@ -112,7 +112,7 @@ public class TradeMessenger
     Parses a JMS text message for the XML representation of a trade,
     and returns the Trade object.
     */
-    public static Trade parseTradeMessage (TextMessage message)
+    public static TradeObject parseTradeMessage (TextMessage message)
     {
         try
         {

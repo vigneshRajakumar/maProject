@@ -22,6 +22,7 @@ import javax.xml.bind.Marshaller;
 
 import com.marketdatahandler.ejb.CitiTradeMarketDataHandler;
 import com.tradingcontroller.TradeObject;
+import com.tradingcontroller.mq.TradeMessenger;
 
 /**
  * Message-Driven Bean implementation class for: AutoTraderMDB
@@ -32,7 +33,7 @@ import com.tradingcontroller.TradeObject;
 				@ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
 		},mappedName = "ATQueue")
 
-public class AutomatedTradingController implements MessageListener {
+public class AutomatedTradingTCMessageBean implements MessageListener {
 
    
 	@Inject 
@@ -45,51 +46,22 @@ public class AutomatedTradingController implements MessageListener {
 	Queue TCQueue;
 	
 	private static Logger LOGGER = 
-	        Logger.getLogger (AutomatedTradingController.class.getName ());
+	        Logger.getLogger (AutomatedTradingTCMessageBean.class.getName ());
 	
 	private static JAXBContext context;
-    
+    private static TradeMessenger tradeMessenger;
     static 
     {
         try
         {
-            context = JAXBContext.newInstance (TradeObject.class);
+            tradeMessenger = new TradeMessenger();
         }
         catch (Exception ex)
         {
-        	LOGGER.log (Level.SEVERE, "Couldn't create JAXB context!", ex);
+        	LOGGER.log (Level.SEVERE, "Couldn't create TradeMessenger!", ex);
         }
     }
-	
-	private static TradeObject tradeFromXML(String message) {
-		try ( StringReader in = new StringReader (message); )
-        {
-            Unmarshaller unmarshaller = context.createUnmarshaller ();
-            return (TradeObject) unmarshaller.unmarshal (in);
-        }
-        catch (Exception ex)
-        {
-            LOGGER.log (Level.WARNING, "Couldn't parse Trade message.", ex);
-        }
-        
-        return null;
-	}
-	
-	private static String tradeToXML(TradeObject trade) {
-		try ( StringWriter out = new StringWriter (); )
-        {
-            Marshaller marshaller = context.createMarshaller ();
-            marshaller.marshal (trade, out);
-            return out.toString ();
-        }
-        catch (Exception ex)
-        {
-            LOGGER.log (Level.WARNING, "Couldn't build Trade message.", ex);
-        }
-        
-        return null;
-	}
-		
+    
     public void onMessage(Message message) {
 
 		try {
@@ -98,7 +70,7 @@ public class AutomatedTradingController implements MessageListener {
 				TextMessage textMessage = (TextMessage)message;
 				System.out.println("MessageBean Received:" + textMessage.getText());
 				//This object will have only the symbol and the amount
-				TradeObject trade = tradeFromXML(textMessage.getText());
+				TradeObject trade = TradeMessenger.tradeFromXML(textMessage.getText());
 				//jmsContext.createProducer().send(brokerQueue, newMessage);
 			}
 			

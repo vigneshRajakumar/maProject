@@ -26,7 +26,6 @@ public class TradingController implements MessageListener {
     	
 	public void sendMsg() throws NamingException{
 		
-		TradingController tcController = new TradingController();
 		InitialContext context = new InitialContext();
 		ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("jms/TradeConnectionFactory");
 

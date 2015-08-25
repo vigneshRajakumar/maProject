@@ -1,10 +1,12 @@
 package com.tradingcontroller;
 
+import javax.jms.Message;
+import javax.jms.MessageListener;
 import com.marketdatahandler.ejb.CitiTradeMarketDataHandler;
 import com.marketdatahandler.ejb.HistoricalData;
 
 
-public class BolingerThread extends Thread {
+public class BolingerThread extends Thread implements MessageListener{
 
 	private double stopLoss;
 	private double movingAverage;
@@ -26,6 +28,12 @@ public class BolingerThread extends Thread {
 			//check the exit condition
 			//exit the loop
 		//exit thread
+	}
+
+	@Override
+	public void onMessage(Message arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	//onmessage listner

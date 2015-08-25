@@ -17,7 +17,7 @@ import com.trade.jpa.Trade;
 @Stateless
 public class TradeController implements ITradeController {
 
-	@PersistenceContext(name="CitiTradeJPA-ejbPU")
+	@PersistenceContext(name="ct_projectUnit")
 	private EntityManager em;
 
 

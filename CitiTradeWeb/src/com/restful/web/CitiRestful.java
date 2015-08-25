@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
+import com.stocklist.ejb.IStockListController;
 import com.stocklist.jpa.StockList;
-import com.stocklistcontroller.ejb.IStockListController;
 import com.trade.jpa.Trade;
 import com.tradingcontroller.ejb.ITradeController;
 import com.usercontroller.ejb.IUserController;

@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.stocklist.ejb.IStockListController;
 import com.stocklist.jpa.StockList;
-import com.stocklistcontroller.ejb.IStockListController;
 
 
 @WebServlet("/TestStockListController")
@@ -121,7 +121,9 @@ public class TestStockListController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		StockList obj = testGetStockListByName();
-		runFile(obj);
+		//runFile(obj);
+		
+		System.out.println(obj.getSName());
 		
 		
 		/*

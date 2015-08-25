@@ -11,19 +11,16 @@ import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.Marshaller;
 
 import com.marketdatahandler.ejb.CitiTradeMarketDataHandler;
-import com.tradingcontroller.TradeObject;
 import com.tradingcontroller.mq.TradeMessenger;
-
+import com.tradingcontroller.ejb.TradingController;
+import com.tradingcontroller.TC_ATObject;
 /**
  * Message-Driven Bean implementation class for: AutoTraderMDB
  */
@@ -70,8 +67,7 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 				TextMessage textMessage = (TextMessage)message;
 				System.out.println("MessageBean Received:" + textMessage.getText());
 				//This object will have only the symbol and the amount
-				//TradeObject trade = TradeMessenger.tradeFromXML(textMessage.getText());
-				//jmsContext.createProducer().send(brokerQueue, newMessage);
+				TC_ATObject obj = TradingController.tradeFromXML(textMessage.getText());
 			}
 			
 		} catch (Exception e) {

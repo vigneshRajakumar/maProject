@@ -1,5 +1,6 @@
 package com.tradingcontroller.ejb;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.logging.Level;
 
@@ -17,6 +18,7 @@ import javax.naming.NamingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import java.util.logging.Logger;
 
@@ -35,12 +37,8 @@ public class TradingController implements ITradingController {
 		TC_ATObject newObj = new TC_ATObject(symbol , amt , profit , loss );
 		
 		String message = "";
-		try {
-			message = tradeToXML(newObj);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-			
+		message = tradeToXML(newObj);
+
 		try {
 			sendMsg(message);
 		} catch (NamingException e) {
@@ -50,13 +48,11 @@ public class TradingController implements ITradingController {
 	}
 
    
-    public static String tradeToXML (TC_ATObject trade) throws JAXBException
+    public static String tradeToXML (TC_ATObject trade)
     {
-    	
-    	context = JAXBContext.newInstance (TC_ATObject.class);
-    	
         try ( StringWriter out = new StringWriter (); )
         {
+        	context = JAXBContext.newInstance(TC_ATObject.class);
             Marshaller marshaller = context.createMarshaller ();
             marshaller.marshal (trade, out);
             return out.toString ();
@@ -65,10 +61,20 @@ public class TradingController implements ITradingController {
         {
             LOGGER.log (Level.WARNING, "Couldn't build Trade message.", ex);
         }
-        
         return null;
     }
 
+	public static TC_ATObject tradeFromXML(String trade) {
+		try ( StringReader in = new StringReader (trade); ) {
+			context = JAXBContext.newInstance(TC_ATObject.class);
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			return (TC_ATObject) unmarshaller.unmarshal(in);
+		}
+		catch (Exception ex) {
+			LOGGER.log (Level.WARNING, "Couldn't parse Trade message.", ex);
+		}
+		return null;
+	}
 	
 	public void sendMsg(String message) throws NamingException {
 

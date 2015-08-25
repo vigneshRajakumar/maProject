@@ -25,8 +25,8 @@ public class Order implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int order_id;
 	
-	@Column(name = "stock_id")
 	@OneToOne
+	@JoinColumn(name = "stock_id")
 	private Stock stock;
 	@Column(name = "short_or_sell")
 	@Enumerated(EnumType.STRING)

@@ -44,11 +44,9 @@ public class AutomatedTradingController {
 	}
 	
 	public void RecordTrade(Trade trade) {
-		
-	}
+	
+		/*
 
-<<<<<<< HEAD
-=======
 		try {
 			if (message instanceof TextMessage)
 			{
@@ -63,8 +61,9 @@ public class AutomatedTradingController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
->>>>>>> parent of fda86e1... add test files on trading controller
-
+	}
+	*/
+	}
 	public ArrayList<bollingerStockWrapper> getStockList() {
 		return stockList;
 	}

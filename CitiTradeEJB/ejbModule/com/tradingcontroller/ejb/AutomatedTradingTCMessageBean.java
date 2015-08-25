@@ -67,14 +67,10 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 		try {
 			if (message instanceof TextMessage)
 			{
-				TextMessage textMessage = (TextMessage)message;
-				System.out.println("MessageBean Received:" + textMessage.getText());
-				//This object will have only the symbol and the amount
-				TradeObject trade = TradeMessenger.tradeFromXML(textMessage.getText());
-				//jmsContext.createProducer().send(brokerQueue, newMessage);
+				
 			}
 			
-		} catch (JMSException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

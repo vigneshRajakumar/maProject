@@ -34,7 +34,6 @@ public class AutomatedTradingOBMessagebean implements MessageListener {
     	if(message instanceof TextMessage) {
     		TextMessage textMsg = (TextMessage)message;
     		TradeObject trade = TradeMessenger.parseTradeMessage(textMsg);
-    		
     	}
     }
 

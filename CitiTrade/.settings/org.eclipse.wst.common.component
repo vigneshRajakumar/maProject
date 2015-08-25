@@ -9,14 +9,7 @@
             <dependent-object/>
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="CitiTradeClient.jar" deploy-path="/" handle="module:/resource/CitiTradeClient/CitiTradeClient">
-            <dependent-object/>
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="java-json.jar" deploy-path="lib" handle="module:/classpath/lib/EarContent/lib/java-json.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="CitiTradeJPA.jar" deploy-path="/lib" handle="module:/resource/CitiTradeJPA/CitiTradeJPA">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="CitiTradeJPA.jar" deploy-path="/lib" handle="module:/resource/CitiTradeJPA/CitiTradeJPA">

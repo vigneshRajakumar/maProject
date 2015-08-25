@@ -25,6 +25,8 @@ public class Trade implements Serializable {
 	private String trade_type ; 
 	private int num_shares ;
 	private double price_pershare ; 
+	private Order order;
+	
 
 	public void setTrade_ID(int id) {
 		this.trade_id = id;
@@ -93,5 +95,14 @@ public class Trade implements Serializable {
 
 	public void setPrice_PerShare(double pricePerShare) {
 		this.price_pershare = pricePerShare;
+	}
+
+	@ManyToOne
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 }

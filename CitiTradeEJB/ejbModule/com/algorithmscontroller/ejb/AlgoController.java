@@ -16,7 +16,7 @@ import com.algorithm.jpa.Algo;
 @Stateless
 public class AlgoController implements IAlgoController{
 	
-	@PersistenceContext(name="CitiTradeJPA-ejbPU")
+	@PersistenceContext(name="ct_projectUnit")
 	private EntityManager em;
 	
 	@Override

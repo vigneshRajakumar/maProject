@@ -14,7 +14,7 @@ import com.trade.jpa.Trade;
  * Session Bean implementation class Trade
  */
 @Stateless
-public class TradeController implements ITradeController {
+public class TradeManager implements ITradeController {
 
 	@PersistenceContext(name="ct_projectUnit")
 	private EntityManager em;

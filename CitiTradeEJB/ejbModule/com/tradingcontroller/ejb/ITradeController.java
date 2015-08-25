@@ -7,7 +7,6 @@ import javax.ejb.Local;
 import com.trade.jpa.Trade;
 
 
-
 @Local
 public interface ITradeController {
 

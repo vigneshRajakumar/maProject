@@ -10,9 +10,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import com.algorithm.jpa.Algo;
 import com.stocklist.jpa.StockList;
-import com.trade.jpa.Trade;
 
 
 @Stateless
@@ -58,8 +56,4 @@ public class StockListController implements IStockListController{
         return stockListObj;
     }
 	
-	@Override
-	public void insertStockList(StockList stockList) {
-		em.persist(stockList);
-	}
 }

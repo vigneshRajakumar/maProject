@@ -16,13 +16,13 @@ import com.algorithm.jpa.Algo;
 @Stateless
 public class AlgoController implements IAlgoController{
 	
-	@PersistenceContext(name="CitiTradeJPA-ejbPU")
+	@PersistenceContext(name="ct_projectUnit")
 	private EntityManager em;
 	
 	@Override
 	public List<Algo> getAllAlgo(){
 
-		Query query = em.createQuery("SELECT algo_a FROM Algo AS algo_a order by algo_a.algo_Name asc"); 
+		Query query = em.createQuery("SELECT algo_a FROM Algo AS algo_a order by algo_a.algo_name asc"); 
 			
 		// Execute the query, and get a collection of beans back.
 		
@@ -38,7 +38,7 @@ public class AlgoController implements IAlgoController{
 	@Override
     public Algo getAlgoByName(String algoName) {
 
-    	TypedQuery<Algo> query = em.createQuery("SELECT algo_b FROM Algo AS algo_b WHERE algo_b.algo_Name = :algoName", Algo.class);
+    	TypedQuery<Algo> query = em.createQuery("SELECT algo_b FROM Algo AS algo_b WHERE algo_b.algo_name = :algoName", Algo.class);
         query.setParameter("algoName", algoName);
 
         // Execute the query, and get a collection of beans back.

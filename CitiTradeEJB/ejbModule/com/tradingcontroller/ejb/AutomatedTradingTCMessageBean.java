@@ -72,7 +72,7 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 				TextMessage textMessage = (TextMessage)message;
 				System.out.println("MessageBean Received:" + textMessage.getText());
 				//This object will have only the symbol and the amount
-				TradeObject trade = TradeMessenger.tradeFromXML(textMessage.getText());
+				//TradeObject trade = TradeMessenger.tradeFromXML(textMessage.getText());
 				//jmsContext.createProducer().send(brokerQueue, newMessage);
 			}
 			

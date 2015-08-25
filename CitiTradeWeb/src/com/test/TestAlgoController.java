@@ -27,11 +27,11 @@ public class TestAlgoController extends HttpServlet {
 		
 	    List<Algo> algoList = algoController.getAllAlgo();
         for (Algo t: algoList) {
-        	System.out.println("The available algorithms are "+t.getAlgo_Name()) ;
+        	System.out.println("The available algorithms are "+t.getAlgo_name()) ;
         }
 	}
 		
-	public void testGetAlgoByName(){ 
+	public void testGetAlgoByName(){  
 		
 	   Algo algoObj = algoController.getAlgoByName("Bollinger Bands");
        System.out.println("The id for Bollinger Bands is "+algoObj.getAlgo_id());

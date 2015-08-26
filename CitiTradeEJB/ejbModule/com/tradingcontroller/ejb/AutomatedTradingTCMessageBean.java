@@ -9,7 +9,6 @@ import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Queue;
@@ -18,7 +17,8 @@ import javax.xml.bind.JAXBContext;
 
 import com.marketdatahandler.ejb.CitiTradeMarketDataHandler;
 import com.tradingcontroller.mq.TradeMessenger;
-
+import com.tradingcontroller.ejb.TradingController;
+import com.tradingcontroller.TC_ATObject;
 /**
  * Message-Driven Bean implementation class for: AutoTraderMDB
  */
@@ -33,20 +33,16 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
    
 	@Inject 
 	JMSContext jmsContext;
-	
-	@EJB
-	CitiTradeMarketDataHandler marketDataHandler;
+
 	@EJB 
 	AutomatedTradingController autoTradingController;
-
-	@Resource(mappedName="jms/TCQueue")	
-	Queue TCQueue;
 	
 	private static Logger LOGGER = 
 	        Logger.getLogger (AutomatedTradingTCMessageBean.class.getName ());
 	
 	private static JAXBContext context;
     private static TradeMessenger tradeMessenger;
+    private static final String ALGO_BB = "Bollinger Bands";
     static 
     {
         try
@@ -67,12 +63,16 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 				TextMessage textMessage = (TextMessage)message;
 				System.out.println("MessageBean Received:" + textMessage.getText());
 				//This object will have only the symbol and the amount
-				//TradeObject trade = TradeMessenger.tradeFromXML(textMessage.getText());
-				//jmsContext.createProducer().send(brokerQueue, newMessage);
+				TC_ATObject obj = TradingController.tradeFromXML(textMessage.getText());
+				if(obj.getAlgo().equals(ALGO_BB)) {
+					if(!autoTradingController.isMonitoring()) {
+						autoTradingController.StartMonitoring();
+						autoTradingController.setMonitoring(true);
+					}
+					autoTradingController.startNewTrade(obj.getSymbol(), obj.getLoss(), obj.getProfit(), obj.getAmtToTrade());
+				}
 			}
-			
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 

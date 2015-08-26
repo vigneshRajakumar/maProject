@@ -13,13 +13,15 @@ public class TC_ATObject {
 	private double profit;
 	private double loss;
 	private double amtToTrade ;
+	private String algo;
 	
-	public TC_ATObject(String symbol, double amtToTrade, double profit , double loss ){
+	public TC_ATObject(String symbol, double amtToTrade, double profit , double loss, String method ){
 		
 		this.symbol = symbol;
 		this.profit = profit;
 		this.loss = loss;
 		this.amtToTrade = amtToTrade;
+		this.algo = method;
 		
 	}
 	
@@ -50,5 +52,13 @@ public class TC_ATObject {
 	}
 	public void setAmtToTrade(double amtToTrade) {
 		this.amtToTrade = amtToTrade;
+	}
+
+	public String getAlgo() {
+		return algo;
+	}
+
+	public void setAlgo(String algo) {
+		this.algo = algo;
 	}
 }

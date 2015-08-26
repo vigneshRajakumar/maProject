@@ -2,12 +2,26 @@ package com.tradingcontroller.ejb;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import javax.ejb.Singleton;
 import javax.ejb.Stateful;
+import javax.jms.JMSException;
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSender;
+import javax.jms.QueueSession;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -18,12 +32,15 @@ import com.trade.jpa.Order;
 import com.trade.jpa.OrderStatus;
 import com.trade.jpa.OrderType;
 import com.trade.jpa.Trade;
+import com.tradingcontroller.TradeObject;
+import com.tradingcontroller.TradeObject.Result;
+import com.tradingcontroller.mq.TradeMessenger;;
 
 /**
  * Session Bean implementation class AutomatedTradingController
  */
 
-@Stateful
+@Singleton
 @LocalBean
 public class AutomatedTradingController {
 	@EJB
@@ -31,18 +48,27 @@ public class AutomatedTradingController {
 
 	@PersistenceContext(unitName = "ct_projectUnit")
 	private EntityManager em;
-
+	private boolean isMonitoring;
 	private ArrayList<Order> beforeEnterOrders = new ArrayList<Order>();
 	private ArrayList<Order> EnteredOrders = new ArrayList<Order>();
 	private ArrayList<bollingerStockWrapper> beforeStockList = new ArrayList<bollingerStockWrapper>();
 	private ArrayList<bollingerStockWrapper> enteredstockList = new ArrayList<bollingerStockWrapper>();
+	private HashMap<String,TradeObject> tradeMap = new HashMap<String,TradeObject>();
+	
+	private static Context ctx;
+	private static QueueConnectionFactory factory;
+	private static Queue orderBrokerMessageQueue;
+	private static QueueConnection orderBrokerMessageQueueConnection;
+	private static int nextTradeId = 0;
+	
+	private final static String QUEUE_OB = "dynamicQueues/OrderBroker";
+	private final static String JMS_ID = "citiTrade";
 	private final static String SHORT = "SHORT";
 	private final static String LONG = "LONG";
-
 	private final static int TIME_PERIOD = -20;
 	private final static int MONITOR_TIME_INTERVAL = 60000;// monitor the data
 															// every one minute
-
+	
 	private class bollingerStockWrapper {
 		private String stockSymbol;
 		private long numOfSharesTraded;
@@ -113,13 +139,14 @@ public class AutomatedTradingController {
 
 		public void updateEnterInfo(OrderType type, double price) {
 			enterPrice = price;
-			shortOrLong = OrderType.SHORT;
+			shortOrLong = type;
 
 			numOfSharesTraded = (long) (totalAmount / price);
 		}
 
 		public boolean isShortEnter(Stock marketStockInfo) {
 			if ((movingAverage - marketStockInfo.getAsk()) > (BAND_WIDTH * standardDeviation)) {
+				updateEnterInfo(OrderType.SHORT, marketStockInfo.getAsk());
 				return true;
 			} else
 				return false;
@@ -127,8 +154,7 @@ public class AutomatedTradingController {
 
 		public boolean isLongEnter(Stock marketStockInfo) {
 			if ((marketStockInfo.getBid() - movingAverage) > (BAND_WIDTH * standardDeviation)) {
-				enterPrice = marketStockInfo.getBid();
-				shortOrLong = OrderType.LONG;
+				updateEnterInfo(OrderType.LONG, marketStockInfo.getBid());
 				return true;
 			}
 			return false;
@@ -202,7 +228,22 @@ public class AutomatedTradingController {
 	 */
 	public AutomatedTradingController() {
 		// TODO Auto-generated constructor stub
+		try {
+			isMonitoring = false;
+			Properties props = new Properties();
+			props.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+					"org.apache.activemq.jndi.ActiveMQInitialContextFactory");
+			props.setProperty(Context.PROVIDER_URL, "tcp://localhost:61616");
 
+			ctx = new InitialContext(props);
+			factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
+			orderBrokerMessageQueue = (Queue) ctx.lookup(QUEUE_OB);
+			
+			
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -219,16 +260,11 @@ public class AutomatedTradingController {
 				OrderStatus.BEFORE_ENTERED, loss, profit);
 	}
 
-	public void AddStockToTrade(String stock) {
-
-	}
-
-	public void RemoveStockToTrade(String stock) {
-
-	}
-
-	public void RecordTrade(Trade trade) {
-
+	public void RecordTrade(TradeObject trade) {
+		if(trade.getResult()==Result.FILLED) {
+			//TODO Change open position
+		}
+		//TODO persist trade to db
 	}
 
 	public void RecordOrder(OrderType type, double total, OrderStatus status,
@@ -245,9 +281,28 @@ public class AutomatedTradingController {
 
 	public void StartMonitoring() {
 		monitorPriceToEnter();
-		// monitorPriceToExit();
 	}
 
+	private void sendTradeMessage(TradeObject trade) {
+		try {
+			orderBrokerMessageQueueConnection = (QueueConnection) factory
+					.createConnection();
+			QueueSession session = orderBrokerMessageQueueConnection
+					.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender sender = session.createSender(orderBrokerMessageQueue);
+			TextMessage textMsg = session.createTextMessage();
+			String text = TradeMessenger.tradeToXML(trade);
+			textMsg.setText(text);
+			textMsg.setJMSCorrelationID(String.valueOf(trade.getId()));
+			sender.send(textMsg);
+			tradeMap.put(textMsg.getJMSCorrelationID(), trade); 
+			orderBrokerMessageQueueConnection.close();
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/*
 	 * Check enter condition for every one minute for every order with the
 	 * 'BEFORE ENTER' status if the condition hit, 1. send message to order
@@ -268,20 +323,36 @@ public class AutomatedTradingController {
 					if (trade.isShortEnter(newInfo)) {
 						// enter short
 						// TODO SEND MESSAGE, IF SUCESS
+						TradeObject tradeToMake = new TradeObject();
+						tradeToMake.setBuy(false);
+						tradeToMake.setId(nextTradeId++);//check this. Why is it needed
+						tradeToMake.setPrice(newInfo.getAsk());
+						tradeToMake.setStock(trade.getStockSymbol());
+						tradeToMake.setToNow();
+						tradeToMake.setSize((int) trade.numOfSharesTraded);
+						sendTradeMessage(tradeToMake);
 						// update order
 						order.setType(OrderType.SHORT);
 						order.setStatus(OrderStatus.ENTERED);
 						em.persist(order);
-						trade.updateEnterInfo(OrderType.SHORT, newInfo.getAsk());
+						//trade.updateEnterInfo(OrderType.SHORT, newInfo.getAsk());
 						changedStatusIndex.add(i);
 
 					} else if (trade.isLongEnter(newInfo)) {
 						// enter long
 						// TODO SEND MESSAGE, IF SUCESS
+						TradeObject tradeToMake = new TradeObject();
+						tradeToMake.setBuy(true);
+						tradeToMake.setId(nextTradeId++);
+						tradeToMake.setPrice(newInfo.getBid());
+						tradeToMake.setStock(trade.getStockSymbol());
+						tradeToMake.setToNow();
+						tradeToMake.setSize((int) trade.numOfSharesTraded);
+						sendTradeMessage(tradeToMake);
 						order.setType(OrderType.LONG);
 						order.setStatus(OrderStatus.ENTERED);
 						em.persist(order);
-						trade.updateEnterInfo(OrderType.LONG, newInfo.getBid());
+						//trade.updateEnterInfo(OrderType.LONG, newInfo.getBid());
 						changedStatusIndex.add(i);
 
 					}
@@ -326,6 +397,14 @@ public class AutomatedTradingController {
 
 			}
 		}, MONITOR_TIME_INTERVAL);
+	}
+
+	public boolean isMonitoring() {
+		return isMonitoring;
+	}
+
+	public void setMonitoring(boolean isMonitoring) {
+		this.isMonitoring = isMonitoring;
 	}
 
 	/*

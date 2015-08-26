@@ -1,7 +1,5 @@
 package com.tradingcontroller.ejb;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,11 +15,8 @@ import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.Marshaller;
 
 import com.marketdatahandler.ejb.CitiTradeMarketDataHandler;
-import com.tradingcontroller.TradeObject;
 import com.tradingcontroller.mq.TradeMessenger;
 
 /**

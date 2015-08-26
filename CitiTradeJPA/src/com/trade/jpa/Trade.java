@@ -19,15 +19,13 @@ public class Trade implements Serializable {
 
 	private int trade_id; 
 	private int trader_id; 
-	//private int stock_id ; 
 	private StockList stockList;
 	private int algo_id ;  
-	private Order order;
+	private int order_id;
 	private String trade_type ; 
 	private int num_shares ;
 	private double price_pershare ; 
 	private double profit_lost ;
-		
 
 	public double getprofit_lost() {
 		return profit_lost;
@@ -74,6 +72,7 @@ public class Trade implements Serializable {
 		this.stock_id = id;
 	}
 */
+		
 	public int getAlgo_ID() {
 		return this.algo_id;
 	}
@@ -106,13 +105,13 @@ public class Trade implements Serializable {
 		this.price_pershare = pricePerShare;
 	}
 
-	@ManyToOne
-	@JoinColumn(name="order_id")
-	public Order getOrder() {
-		return order;
+	public int getorder_id() {
+		return order_id;
 	}
 
-	public void setOrder(Order order) {
-		this.order = order;
+	public void setorder_id(int order_id) {
+		this.order_id = order_id;
 	}
+
+
 }

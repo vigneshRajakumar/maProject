@@ -16,13 +16,12 @@ import com.marketdatahandle.jpa.Stock;
 @Table(schema = "ct_project", name = "ct_orders")
 public class Order implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+		
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int order_id;
 	
-	@OneToOne
-	@JoinColumn(name = "stock_id")
-	private Stock stock;
 	@Column(name = "short_or_sell")
 	@Enumerated(EnumType.STRING)
 	private OrderType type;
@@ -33,20 +32,25 @@ public class Order implements Serializable {
 	@Column(name = "order_status")
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;// "BEFORE ENTER" "ENTERED" "EXIT"
+	
 	@Column(name = "loss_percentage")
 	private Double lossPercentage;
+	
 	@Column(name = "profit_percentage")
 	private Double profitPercentage;
-
+		
+	private int trader_id ;
+	
+	private int strategy_id;
+	/*
 	// all the trades under this order id
 	private ArrayList<Trade> allTrades;
-
-	private static final long serialVersionUID = 1L;
-
-	public Order() {
-		super();
-	}
-
+		
+	@OneToOne
+	@JoinColumn(name = "stock_id")
+	private Stock stock;
+	*/
+	
 	public int getOrder_id() {
 		return this.order_id;
 	}
@@ -55,6 +59,14 @@ public class Order implements Serializable {
 		this.order_id = order_id;
 	}
 
+	public OrderType getType() {
+		return type;
+	}
+
+	public void setType(OrderType type) {
+		this.type = type;
+	}
+	
 	public Double getTotal_amount() {
 		return total_amount;
 	}
@@ -62,7 +74,6 @@ public class Order implements Serializable {
 	public void setTotal_amount(Double total_amount) {
 		this.total_amount = total_amount;
 	}
-
 	public OrderStatus getStatus() {
 		return status;
 	}
@@ -86,30 +97,35 @@ public class Order implements Serializable {
 	public void setProfitPercentage(Double profitPercentage) {
 		this.profitPercentage = profitPercentage;
 	}
+		
+	public int gettrader_id() {
+		return trader_id;
+	}
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	public void settrader_id(int trader_id) {
+		this.trader_id = trader_id;
+	}
+
+	public int getstrategy_id() {
+		return strategy_id;
+	}
+
+	public void setstrategy_id(int strategy_id) {
+		this.strategy_id = strategy_id;
+	}
+
+	/*
 	public ArrayList<Trade> getAllTrades() {
 		return allTrades;
 	}
-
 	public void setAllTrades(ArrayList<Trade> allTrades) {
 		this.allTrades = allTrades;
 	}
-
 	public Stock getStock() {
 		return stock;
 	}
-
 	public void setStock(Stock stock) {
 		this.stock = stock;
-	}
-
-	public OrderType getType() {
-		return type;
-	}
-
-	public void setType(OrderType type) {
-		this.type = type;
-	}
-
+	}*/
+	
 }

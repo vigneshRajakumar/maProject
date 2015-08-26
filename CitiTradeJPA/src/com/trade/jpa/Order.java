@@ -2,27 +2,26 @@ package com.trade.jpa;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.*;
 
 import com.marketdatahandle.jpa.Stock;
 
-/**
- * Entity implementation class for Entity: Order
- *
- */
-
 @Entity
 @Table(schema = "ct_project", name = "ct_orders")
 public class Order implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-		
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="order_id")
 	private int order_id;
 	
-	@Column(name = "short_or_sell")
+/*	@OneToOne*/
+	@Column(name = "stock")
+	private String stock;
+	@Column(name = "short_or_long")
 	@Enumerated(EnumType.STRING)
 	private OrderType type;
 	
@@ -32,25 +31,27 @@ public class Order implements Serializable {
 	@Column(name = "order_status")
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;// "BEFORE ENTER" "ENTERED" "EXIT"
-	
 	@Column(name = "loss_percentage")
 	private Double lossPercentage;
-	
 	@Column(name = "profit_percentage")
 	private Double profitPercentage;
-		
-	private int trader_id ;
+
+	@Column(name = "trader_id")
+	private int trader_id;
 	
-	private int strategy_id;
-	/*
+	@Column(name = "algo_id")
+	private int algo_id;
 	// all the trades under this order id
-	private ArrayList<Trade> allTrades;
-		
-	@OneToOne
-	@JoinColumn(name = "stock_id")
-	private Stock stock;
-	*/
 	
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	private List<Trade> trades;
+
+	private static final long serialVersionUID = 1L;
+
+	public Order() {
+		super();
+	}
+
 	public int getOrder_id() {
 		return this.order_id;
 	}
@@ -59,14 +60,6 @@ public class Order implements Serializable {
 		this.order_id = order_id;
 	}
 
-	public OrderType getType() {
-		return type;
-	}
-
-	public void setType(OrderType type) {
-		this.type = type;
-	}
-	
 	public Double getTotal_amount() {
 		return total_amount;
 	}
@@ -74,6 +67,7 @@ public class Order implements Serializable {
 	public void setTotal_amount(Double total_amount) {
 		this.total_amount = total_amount;
 	}
+
 	public OrderStatus getStatus() {
 		return status;
 	}
@@ -97,35 +91,46 @@ public class Order implements Serializable {
 	public void setProfitPercentage(Double profitPercentage) {
 		this.profitPercentage = profitPercentage;
 	}
-		
-	public int gettrader_id() {
+
+	
+	public List<Trade> getTrades() {
+		return trades;
+	}
+
+	public void setTrades(List<Trade> allTrades) {
+		this.trades = allTrades;
+	}
+
+	public String getStock() {
+		return stock;
+	}
+
+	public void setStock(String stock) {
+		this.stock = stock;
+	}
+
+	public OrderType getType() {
+		return type;
+	}
+
+	public void setType(OrderType type) {
+		this.type = type;
+	}
+
+	public int getTrader_id() {
 		return trader_id;
 	}
 
-	public void settrader_id(int trader_id) {
+	public void setTrader_id(int trader_id) {
 		this.trader_id = trader_id;
 	}
 
-	public int getstrategy_id() {
-		return strategy_id;
+	public int getalgo_id() {
+		return algo_id;
 	}
 
-	public void setstrategy_id(int strategy_id) {
-		this.strategy_id = strategy_id;
+	public void setalgo_id(int algo_id) {
+		this.algo_id = algo_id;
 	}
 
-	/*
-	public ArrayList<Trade> getAllTrades() {
-		return allTrades;
-	}
-	public void setAllTrades(ArrayList<Trade> allTrades) {
-		this.allTrades = allTrades;
-	}
-	public Stock getStock() {
-		return stock;
-	}
-	public void setStock(Stock stock) {
-		this.stock = stock;
-	}*/
-	
 }

@@ -16,8 +16,6 @@ import com.usercontroller.ejb.IUserController;
 import com.usercontroller.jpa.User;
 import com.usercontroller.jpa.UserType;
 
-
-
 @WebServlet("/TestUserController")
 
 public class TestUserController extends HttpServlet {

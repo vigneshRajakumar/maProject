@@ -10,7 +10,23 @@ CREATE TABLE ct_userType
    user_type      varchar(40)       NOT NULL
 );
 INSERT INTO `ct_userType` VALUES (1,'Trader');
-INSERT INTO `ct_usersequenceType` VALUES (2,'Trader2');
+
+
+CREATE TABLE ct_users
+(
+   user_id         int 	            primary key auto_increment,
+   user_type       int,
+   uname          varchar(100)      NOT NULL,
+   passwd         varchar(100)      NOT NULL,
+   balance        decimal(20,4)	    NOT NULL DEFAULT 0.00,
+   profit_lost    decimal(20,4)     NOT NULL DEFAULT 0.00,
+   firstname	  varchar(100)		NOT NULL,
+   lastname		  varchar(100)		NOT NULL,
+   email		  varchar(100)		NOT NULL,
+   FOREIGN KEY(user_type) REFERENCES ct_userType(type_id)
+);
+INSERT INTO `ct_users` VALUES (1,1,'trader','57a0ebe4c35f8e72be9349834dc619',0.0,0.0 , 'userfirstname', 'userlastname' , 'userEmail');
+
 
 CREATE TABLE ct_stocklist
 (
@@ -47,32 +63,22 @@ INSERT INTO `ct_algorithms` VALUES (3,'Price Breakout');
 
 CREATE TABLE ct_orders
 (
-	order_id       int    primary key auto_increment,
-    short_or_sell  varchar(50)      default 'NONE'  CHECK(short_or_sell IN ('NONE','SHORT','SELL')),
-    total_amount   decimal(20,4)    NOT NULL,
-    order_status   varchar(50)      CHECK (order_status IN ('BEFORE_ENTERED','ENTERED','EXITED')),
-    loss_percentage decimal(4,4),
-    profit_percentage decimal(4,4)
+	order_id       		int    primary key auto_increment,
+    short_or_sell  		varchar(50)      default 'NONE'  CHECK(short_or_sell IN ('NONE','SHORT','SELL')),
+    total_amount   		decimal(20,4)    NOT NULL,
+    order_status   		varchar(50)      CHECK (order_status IN ('BEFORE_ENTERED','ENTERED','EXITED')),
+    loss_percentage 	decimal(4,4),
+    profit_percentage 	decimal(4,4),
+    trader_id       	int  ,
+	strategy_id       	int  ,
+    FOREIGN KEY(trader_id) REFERENCES ct_users(user_id) , 
+    FOREIGN KEY(strategy_id) REFERENCES ct_algorithms(algo_id)
 
 );
-INSERT INTO `ct_orders` VALUES(1,'SHORT', 100, 'ENTERED', 0.01, 0.03);
-INSERT INTO `ct_orders` VALUES(2,'NONE', 100, 'BEFORE ENTERED', 0.01, 0.03);
-INSERT INTO `ct_orders` VALUES(3,'LONG', 100, 'ENTERED', 0.01, 0.03);
+INSERT INTO `ct_orders` VALUES(1,'SHORT', 100, 'ENTERED', 0.01, 0.03 , 1,1);
+INSERT INTO `ct_orders` VALUES(2,'NONE', 100, 'BEFORE ENTERED', 0.01, 0.03 , 1,1);
+INSERT INTO `ct_orders` VALUES(3,'LONG', 100, 'ENTERED', 0.01, 0.03 ,1 ,1);
 
-CREATE TABLE ct_users
-(
-   user_id         int 	            primary key auto_increment,
-   user_type       int,
-   uname          varchar(100)      NOT NULL,
-   passwd         varchar(100)      NOT NULL,
-   balance        decimal(20,4)	    NOT NULL DEFAULT 0.00,
-   profit_lost    decimal(20,4)     NOT NULL DEFAULT 0.00,
-   firstname	  varchar(100)		NOT NULL,
-   lastname		  varchar(100)		NOT NULL,
-   email		  varchar(100)		NOT NULL,
-   FOREIGN KEY(user_type) REFERENCES ct_userType(type_id)
-);
-INSERT INTO `ct_users` VALUES (1,1,'trader','57a0ebe4c35f8e72be9349834dc619',0.0,0.0 , 'userfirstname', 'userlastname' , 'userEmail');
 
 CREATE TABLE `sequence` (
   `SEQ_NAME` varchar(50) NOT NULL,

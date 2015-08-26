@@ -19,7 +19,6 @@ public class Trade implements Serializable {
 
 	private int trade_id; 
 	private int trader_id; 
-	//private int stock_id ; 
 	private StockList stockList;
 	private int algo_id ;  
 	private String trade_type ; 
@@ -98,6 +97,7 @@ public class Trade implements Serializable {
 	}
 
 	@ManyToOne
+	@JoinColumn(name ="order_id")
 	public Order getOrder() {
 		return order;
 	}

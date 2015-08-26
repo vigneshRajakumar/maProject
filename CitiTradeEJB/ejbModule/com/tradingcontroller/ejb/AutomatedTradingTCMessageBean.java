@@ -1,7 +1,5 @@
 package com.tradingcontroller.ejb;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

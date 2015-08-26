@@ -28,7 +28,7 @@ public class TradeManager implements ITradeController {
 	@Override
 	public List<Trade> getAllTradeByUserID(int trader_id) {
 
-		Query query = em.createQuery("SELECT trade_a FROM Trade AS trade_a where trade_a.trader_id = :trader_id");
+		Query query = em.createQuery("SELECT trade_b FROM Trade AS trade_b where trade_b.trader_id = :trader_id");
 		query.setParameter("trader_id", trader_id);
 
 		// Execute the query, and get a collection of beans back.

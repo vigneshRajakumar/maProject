@@ -52,7 +52,7 @@ public class portfolioRequestHandler implements portfolioRequestHandlerRemote,
 		System.out.print("no. of results "+result.size());
 		for (Order order : result) {
 			String symbol = order.getStock();
-			int algo = order.getAlgo_id();
+			int algo = order.getalgo_id();
 			double amount = order.getTotal_amount();
 			int status;
 			double currentValue;
@@ -152,7 +152,7 @@ public class portfolioRequestHandler implements portfolioRequestHandlerRemote,
 	public void createOrderTest() {
 		// TODO Auto-generated method stub
 		Order o = new Order();
-		o.setAlgo_id(1);
+		o.setalgo_id(1);
 
 	}
 
@@ -166,7 +166,7 @@ public class portfolioRequestHandler implements portfolioRequestHandlerRemote,
 		Order o = new Order();
 		o.setTrader_id(1);
 		o.setStatus(OrderStatus.EXIT);
-		o.setAlgo_id(1);
+		o.setalgo_id(1);
 		o.setLossPercentage(0.01);
 		o.setProfitPercentage(0.05);
 		o.setTotal_amount(1000000.0);

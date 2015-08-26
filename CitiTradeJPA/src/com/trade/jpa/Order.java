@@ -9,16 +9,6 @@ import javax.persistence.*;
 
 import com.marketdatahandle.jpa.Stock;
 
-
-
-
-/**
- * Entity implementation class for Entity: Order
- *
- */
-
-
-
 @Entity
 @Table(schema = "ct_project", name = "ct_orders")
 public class Order implements Serializable {
@@ -137,11 +127,11 @@ public class Order implements Serializable {
 		this.trader_id = trader_id;
 	}
 
-	public int getAlgo_id() {
+	public int getalgo_id() {
 		return algo_id;
 	}
 
-	public void setAlgo_id(int algo_id) {
+	public void setalgo_id(int algo_id) {
 		this.algo_id = algo_id;
 	}
 

@@ -40,7 +40,7 @@ public class TestAlgorithmTwoMovingAverages extends HttpServlet {
 
 		
 		//String symbol, int startYear,	int startMonth, int startDay, int endYear, int endMonth, int endDay);
-		ArrayList<HistoricalData> historicalDataThirtyDays = marketDataHandler.getHistoricalDataBySymbol("AAPL", year, month, dayOfMonth-1, year, month, dayOfMonth);
+//		ArrayList<HistoricalData> historicalDataThirtyDays = marketDataHandler.getHistoricalDataBySymbol("AAPL", year, month, dayOfMonth-1, year, month, dayOfMonth);
 
 		
 		for (HistoricalData s : historicalDataThirtyDays){

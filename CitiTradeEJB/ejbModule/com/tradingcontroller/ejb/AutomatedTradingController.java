@@ -52,7 +52,6 @@ public class AutomatedTradingController {
 	private ArrayList<Order> beforeEnterOrders = new ArrayList<Order>();
 	private ArrayList<Order> EnteredOrders = new ArrayList<Order>();
 	private ArrayList<bollingerStockWrapper> beforeStockList = new ArrayList<bollingerStockWrapper>();
-	private ArrayList<bollingerStockWrapper> enteredstockList = new ArrayList<bollingerStockWrapper>();
 	private HashMap<String,TradeObject> tradeMap = new HashMap<String,TradeObject>();
 	
 	private static Context ctx;
@@ -368,6 +367,8 @@ public class AutomatedTradingController {
 	 * entered status if the condition hit, 1. send message to order broker, 2.
 	 * recorder trade, 3. change order status
 	 */
+	
+	/*
 	public void monitorPriceToExit() {
 		// will there be any data lost???????????????
 		// numOfSharesTraded = (long) (totalAmount / enterPrice);
@@ -398,7 +399,7 @@ public class AutomatedTradingController {
 			}
 		}, MONITOR_TIME_INTERVAL);
 	}
-
+*/
 	public boolean isMonitoring() {
 		return isMonitoring;
 	}

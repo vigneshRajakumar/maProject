@@ -91,20 +91,21 @@ public class TradingController implements ITradingController {
 		jmsProducer.send(ATQueue, message);
 	}
 	
-	
+	@Override
 	public String setRecordStatus(TC_ATObject obj  ){
+				
 		
 		/*
-		String
 		String symbol = obj.getSymbol();
+		String profit = obj.getProfit();
 		double amt = obj.getAmtToTrade();
 		double loss = obj.getLoss();
 		double profit = obj.getProfit();
 		
 		
 		System.out.println("Symbol : ")
-				*/
-		
+			
+		*/
 		return "";
 	}
 

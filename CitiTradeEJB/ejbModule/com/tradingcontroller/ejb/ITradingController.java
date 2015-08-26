@@ -9,6 +9,8 @@ public interface ITradingController {
 
 	//void sendMsg();
 	void sendInputValues(String symbol , double amt , double profit , double loss, String method);
-	String setRecordStatus(TC_ATObject obj);
+	void setRecordStatus(TC_ATObject obj);
+	void getMsgFromQueue();
+	void sendMsgToQueue(String msgToSend);
 
 }

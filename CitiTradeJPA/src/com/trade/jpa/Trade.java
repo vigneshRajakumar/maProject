@@ -6,6 +6,10 @@ import javax.persistence.*;
 
 import com.stocklist.jpa.StockList;
 
+/**
+ * Entity implementation class for Entity: Trades
+ *
+ */
 
 @Entity
 @Table(schema="ct_project", name="ct_trades")

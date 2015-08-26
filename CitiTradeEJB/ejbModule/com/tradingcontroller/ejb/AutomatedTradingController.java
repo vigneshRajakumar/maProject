@@ -496,6 +496,8 @@ public class AutomatedTradingController {
 	 * entered status if the condition hit, 1. send message to order broker, 2.
 	 * recorder trade, 3. change order status
 	 */
+	
+	/*
 	public void monitorPriceToExit() {
 		// will there be any data lost???????????????
 		// numOfSharesTraded = (long) (totalAmount / enterPrice);
@@ -533,7 +535,7 @@ public class AutomatedTradingController {
 			}
 		}, MONITOR_TIME_INTERVAL);
 	}
-
+*/
 	public boolean isMonitoring() {
 		return isMonitoring;
 	}

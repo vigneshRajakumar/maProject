@@ -74,10 +74,10 @@ public class AutomatedTradingController {
 	@PersistenceContext(unitName = "ct_projectUnit")
 	private EntityManager em;
 	private boolean isMonitoring;
-	private ArrayList<Order> beforeEnterOrders = new ArrayList<Order>();
-	private ArrayList<Order> EnteredOrders = new ArrayList<Order>();
-	private ArrayList<bollingerStockWrapper> beforeStockList = new ArrayList<bollingerStockWrapper>();
-	private ArrayList<bollingerStockWrapper> enteredstockList = new ArrayList<bollingerStockWrapper>();
+	private static ArrayList<Order> beforeEnterOrders = new ArrayList<Order>();
+	private static ArrayList<Order> EnteredOrders = new ArrayList<Order>();
+	private static ArrayList<bollingerStockWrapper> beforeStockList = new ArrayList<bollingerStockWrapper>();
+	private static ArrayList<bollingerStockWrapper> enteredstockList = new ArrayList<bollingerStockWrapper>();
 
 	
 	private HashMap<String, TradeStructureForLogging> tradeMap = new HashMap<String, TradeStructureForLogging>();
@@ -101,7 +101,7 @@ public class AutomatedTradingController {
 	private final static String SHORT = "SHORT";
 	private final static String LONG = "LONG";
 	private final static int TIME_PERIOD = -20;
-	private final static int MONITOR_TIME_INTERVAL = 60000;// monitor the data
+	private final static int MONITOR_TIME_INTERVAL = 1000;// monitor the data
 															// every one minute
 
 	private class bollingerStockWrapper {
@@ -115,7 +115,7 @@ public class AutomatedTradingController {
 		private double movingAverage;
 		private double percentageProfit;
 		private double standardDeviation;
-		private final static double BAND_WIDTH = 2;
+		private final static double BAND_WIDTH = 0.5;
 
 		// constructor
 		public bollingerStockWrapper(String symbol, double loss, double profit,
@@ -132,6 +132,7 @@ public class AutomatedTradingController {
 			// get the historical data
 			// calculate sigma
 			standardDeviation = getStd(getHistoricalData());
+			System.out.println("[AUTO ALGO]: stock " + stockSymbol+" mean: " +movingAverage+"  std: " + standardDeviation);
 			// loop to find entry condition
 
 		}
@@ -147,10 +148,10 @@ public class AutomatedTradingController {
 			calReturn.add(Calendar.DATE, TIME_PERIOD);
 			data = marketDataHandler.getHistoricalDataBySymbol(stockSymbol,
 					calReturn.get(Calendar.YEAR),
-					calReturn.get(Calendar.MONTH),
+					calReturn.get(Calendar.MONTH)+1,
 					calReturn.get(Calendar.DAY_OF_MONTH),
-					today.get(Calendar.YEAR), today.get(Calendar.YEAR),
-					today.get(Calendar.YEAR));
+					today.get(Calendar.YEAR), today.get(Calendar.MONTH)+1,
+					today.get(Calendar.DAY_OF_MONTH));
 
 			return data;
 		}
@@ -170,17 +171,19 @@ public class AutomatedTradingController {
 				sumDiff += Math.pow((d.getAdj_colse() - movingAverage), 2);
 			}
 			return Math.sqrt(sumDiff / data.size());
+			
 		}
 
 		public void updateEnterInfo(OrderType type, double price) {
 			enterPrice = price;
 			shortOrLong = type;
-
 			numOfSharesTraded = (int) (totalAmount / price);
+			System.out.println(String.format("[AUTO ALGO - updateEnterInfo] : enterPrice: %f\nNumber of shares: %d", enterPrice, numOfSharesTraded));
 		}
 
 		public boolean isShortEnter(Stock marketStockInfo) {
-			if ((movingAverage - marketStockInfo.getBid()) > (BAND_WIDTH * standardDeviation)) {
+			//current bid(sell) price is higher than the average more than 2 std
+			if ((marketStockInfo.getBid() - movingAverage) > (BAND_WIDTH * standardDeviation)) {
 				updateEnterInfo(OrderType.SHORT, marketStockInfo.getBid());
 				return true;
 			} else
@@ -188,7 +191,8 @@ public class AutomatedTradingController {
 		}
 
 		public boolean isLongEnter(Stock marketStockInfo) {
-			if ((marketStockInfo.getAsk() - movingAverage) > (BAND_WIDTH * standardDeviation)) {
+			//current ask(buy) price is lower than the average more than 2 std
+			if ((movingAverage - marketStockInfo.getAsk()) > (BAND_WIDTH * standardDeviation)) {
 				updateEnterInfo(OrderType.LONG, marketStockInfo.getAsk());
 				return true;
 			}
@@ -292,18 +296,20 @@ public class AutomatedTradingController {
 	 */
 	public void startNewTrade(String symbol, double loss, double profit,
 			double totalAmountLimit) {
+		System.out.println("[AUTO ALGO-start new trade]: stock " + symbol);
 		bollingerStockWrapper bollStockTrade = new bollingerStockWrapper(
 				symbol, loss, profit, totalAmountLimit);
 		bollStockTrade.run();
 		beforeStockList.add(bollStockTrade);
-		RecordOrder(OrderType.NONE, totalAmountLimit,
+		RecordOrder(symbol,OrderType.NONE, totalAmountLimit,
 				OrderStatus.BEFORE_ENTERED, loss, profit);
 	}
 
 	public void RecordTrade(TradeObject trade) {
-		
+		System.out.println("nexttrade: "+nextTradeId);
 		if (trade.getResult() == Result.FILLED) {
 			// TODO Change open position
+			System.out.println("[AUTO ALGO] Result is filled");
 			TradeStructureForLogging tradeToBeRecord = tradeMap.get(String
 					.valueOf(trade.getId()));
 			int index = tradeToBeRecord.index;
@@ -377,15 +383,19 @@ public class AutomatedTradingController {
 		sendResponseMessage(obj);
 	}
 
-	public void RecordOrder(OrderType type, double total, OrderStatus status,
+	public void RecordOrder(String symbol,OrderType type, double total, OrderStatus status,
 			double lossPer, double proPer) {
 		Order newO = new Order();
+		newO.setStock(symbol);
 		newO.setLossPercentage(lossPer);
 		newO.setProfitPercentage(proPer);
 		newO.setStatus(status);
 		newO.setTotal_amount(total);
 		newO.setType(type);
 		newO.setTrades(new ArrayList<Trade>());
+		newO.setalgo_id(1);
+		//TODO hard coded, need to add one file
+		newO.setTrader_id(1);
 		em.persist(newO);
 		beforeEnterOrders.add(newO);// add to the list
 		System.out.println("[DEBUG MSG(add beforeenterorder list):       ]"+beforeEnterOrders.size());
@@ -393,6 +403,7 @@ public class AutomatedTradingController {
 
 	public void StartMonitoring() {
 		monitorPriceToEnter();
+//		monitorPriceToExit();
 	}
 
 	private void sendTradeMessage(TradeStructureForLogging trade) {
@@ -444,11 +455,12 @@ public class AutomatedTradingController {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
+				System.out.println("[AUTO ALGO-monitor enter] " );
 				ArrayList<Integer> changedStatusIndex = new ArrayList<Integer>();
 				for (int i = 0; i < beforeStockList.size(); i++) {
 					bollingerStockWrapper trade = beforeStockList.get(i);
 					Order order = beforeEnterOrders.get(i);
-					System.out.println("[DEBUG MSG(loop beforeenterorder list):       ]"+beforeEnterOrders.size());
+					System.out.println("[AUTO ALGO-monitor enter][DEBUG MSG(loop beforeenterorder symbol):       ]"+order.getStock());
 					Stock newInfo = marketDataHandler.getStockBySymbol(trade
 							.getStockSymbol());
 					if (trade.isShortEnter(newInfo)) {
@@ -465,6 +477,7 @@ public class AutomatedTradingController {
 						sendTradeMessage(new TradeStructureForLogging(
 								tradeToMake, OrderStatus.ENTERED,
 								OrderType.SHORT, i));
+						System.out.println("[AUTO ALGO-monitor enter sort- sent msg]");
 						// update order
 
 						// trade.updateEnterInfo(OrderType.SHORT,
@@ -484,7 +497,7 @@ public class AutomatedTradingController {
 						sendTradeMessage(new TradeStructureForLogging(
 								tradeToMake, OrderStatus.ENTERED,
 								OrderType.LONG, i));
-						
+						System.out.println("[AUTO ALGO-monitor enter long- sent msg]");
 						// trade.updateEnterInfo(OrderType.LONG,
 						// newInfo.getBid());
 						changedStatusIndex.add(i);
@@ -512,6 +525,7 @@ public class AutomatedTradingController {
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
+				System.out.println("[AUTO ALGO-monitor exit] " );
 				ArrayList<Integer> changedStatusIndex = new ArrayList<Integer>();
 				for (int i = 0; i < enteredstockList.size(); i++) {
 					bollingerStockWrapper trade = enteredstockList.get(i);

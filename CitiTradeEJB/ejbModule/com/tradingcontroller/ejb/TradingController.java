@@ -50,6 +50,7 @@ public class TradingController implements ITradingController {
 		message = tradeToXML(newObj);
 
 		try {
+			
 			sendMsg(message);
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -65,6 +66,7 @@ public class TradingController implements ITradingController {
 			context = JAXBContext.newInstance(TC_ATObject.class);
 			Marshaller marshaller = context.createMarshaller ();
 			marshaller.marshal (trade, out);
+			System.out.println("[PARSING!!!!!!!!!!!!!!!!]: " +out.toString());
 			return out.toString ();
 		}
 		catch (Exception ex)
@@ -168,10 +170,11 @@ public class TradingController implements ITradingController {
 	}
 
 	@Override
-	public void getMsgFromQueue(){
+	public String getMsgFromQueue(){
 
 		QueueConnection queueConnection = null;
-
+		String msgToUI = "";
+		
 		try {
 
 			InitialContext context = new InitialContext();
@@ -181,13 +184,14 @@ public class TradingController implements ITradingController {
 			QueueSession queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 			QueueReceiver queueReceiver = queueSession.createReceiver(queue);
 			queueConnection.start();
-
+			
 			while (true) {
 				Message m = queueReceiver.receive(1);
 				if (m != null) {
 					if (m instanceof TextMessage) {
 						TextMessage message = (TextMessage) m;
-						System.out.println(message.getText());
+						msgToUI = message.getText();
+						//System.out.println(message.getText());
 					} else {
 						
 						break;
@@ -214,8 +218,8 @@ public class TradingController implements ITradingController {
 				}
 			}
 		}
+		
+		return msgToUI;
+		
 	}
-
-
-
 }

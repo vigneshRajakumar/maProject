@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +43,7 @@ public class HistoricalInfoHelper {
 
 
 		URL _url = new URL(String.format("%s%s%s", base, query,postFix));
+		System.out.println(_url.toString());
 
 		HttpURLConnection con = (HttpURLConnection) _url.openConnection();
 		con.setRequestMethod("GET");
@@ -61,10 +61,11 @@ public class HistoricalInfoHelper {
 			in.close();
 
 			// print result
+			System.out.println(response.toString());
 			JSONArray array = parseResponseJson(response.toString());
 			result = parseArray(array);
 		}// 200
-		System.out.println("[MARKET DATA HANDLER(get historical data by symbol)]: " + symbol);
+
 		return result;
 	}
 	
@@ -76,6 +77,7 @@ public class HistoricalInfoHelper {
 		try {
 			JSONObject jsonObj = new JSONObject(respponse);
 			JSONArray result = jsonObj.getJSONObject("query").getJSONObject("results").getJSONArray("row");
+			System.out.println(result.toString());
 			return result;
 		} catch (JSONException e) {
 			e.printStackTrace();

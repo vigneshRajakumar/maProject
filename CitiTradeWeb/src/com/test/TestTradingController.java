@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import com.tradingcontroller.TC_ATObject;
 import com.tradingcontroller.ejb.ITradingController;
 
@@ -25,8 +26,8 @@ public class TestTradingController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		TC_ATObject tradeResponseObj = new TC_ATObject("AAPL", 33000, 55000 , 0, "Bollinger Bands");
-		
-		tradingController.setRecordStatus(tradeResponseObj);
+				
+		//tradingController.setRecordStatus(tradeResponseObj);
 		
 		//tradingController.sendInputValues("AAPL", 20.0, 16, 10,"Bollinger Bands");
 		//tradingController.sendMsgToQueue("Hello Kitty");
@@ -39,7 +40,7 @@ public class TestTradingController extends HttpServlet {
 		
 		
 		//System.out.println("Now getting from queue !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		tradingController.getMsgFromQueue();
+		//tradingController.getMsgFromQueue();
 		
 	}
 	

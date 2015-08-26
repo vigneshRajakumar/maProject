@@ -168,10 +168,11 @@ public class TradingController implements ITradingController {
 	}
 
 	@Override
-	public void getMsgFromQueue(){
+	public String getMsgFromQueue(){
 
 		QueueConnection queueConnection = null;
-
+		String msgToUI = "";
+		
 		try {
 
 			InitialContext context = new InitialContext();
@@ -181,13 +182,14 @@ public class TradingController implements ITradingController {
 			QueueSession queueSession = queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 			QueueReceiver queueReceiver = queueSession.createReceiver(queue);
 			queueConnection.start();
-
+			
 			while (true) {
 				Message m = queueReceiver.receive(1);
 				if (m != null) {
 					if (m instanceof TextMessage) {
 						TextMessage message = (TextMessage) m;
-						System.out.println(message.getText());
+						msgToUI = message.getText();
+						//System.out.println(message.getText());
 					} else {
 						
 						break;
@@ -214,8 +216,8 @@ public class TradingController implements ITradingController {
 				}
 			}
 		}
+		
+		return msgToUI;
+		
 	}
-
-
-
 }

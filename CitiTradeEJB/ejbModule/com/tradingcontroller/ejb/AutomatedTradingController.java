@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.Stateful;
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -29,17 +30,18 @@ import javax.persistence.PersistenceContext;
 import com.marketdatahandle.jpa.Stock;
 import com.marketdatahandler.ejb.HistoricalData;
 import com.marketdatahandler.ejb.MarketDataHandlerLocal;
+import com.stocklist.ejb.IStockListController;
 import com.stocklist.ejb.StockListController;
 import com.stocklist.jpa.StockList;
 import com.trade.jpa.Order;
 import com.trade.jpa.OrderStatus;
 import com.trade.jpa.OrderType;
 import com.trade.jpa.Trade;
+import com.tradingcontroller.TC_ATObject;
 import com.tradingcontroller.TradeObject;
 import com.tradingcontroller.TradeObject.Result;
 import com.tradingcontroller.mq.TradeMessenger;
-
-;
+import com.tradingcontroller.ejb.TradingController;
 
 /**
  * Session Bean implementation class AutomatedTradingController
@@ -59,6 +61,7 @@ class TradeStructureForLogging {
 	}
 }
 
+
 @Singleton
 @LocalBean
 public class AutomatedTradingController {
@@ -66,7 +69,7 @@ public class AutomatedTradingController {
 	MarketDataHandlerLocal marketDataHandler;
 	
 	@EJB
-	StockListController stockListController;
+	IStockListController stockListController;
 
 	@PersistenceContext(unitName = "ct_projectUnit")
 	private EntityManager em;
@@ -75,16 +78,25 @@ public class AutomatedTradingController {
 	private ArrayList<Order> EnteredOrders = new ArrayList<Order>();
 	private ArrayList<bollingerStockWrapper> beforeStockList = new ArrayList<bollingerStockWrapper>();
 	private ArrayList<bollingerStockWrapper> enteredstockList = new ArrayList<bollingerStockWrapper>();
-	private HashMap<String, TradeStructureForLogging> tradeMap = new HashMap<String, TradeStructureForLogging>();
 
+	
+	private HashMap<String, TradeStructureForLogging> tradeMap = new HashMap<String, TradeStructureForLogging>();
 	private CalculationHelper calculator = new CalculationHelper();
-	private static Context ctx;
-	private static QueueConnectionFactory factory;
+	private static QueueConnectionFactory orderBrokerMessageFactory;
+	private static Context orderBrokerMessageContext;
 	private static Queue orderBrokerMessageQueue;
 	private static QueueConnection orderBrokerMessageQueueConnection;
+	
+	private static Context tradeControllerMessageContext;
+	private static QueueConnectionFactory tradeControllerMessageFactory;
+	private static Queue tradeControllerMessageQueue;
+	private static QueueConnection tradeControllerMessageQueueConnection;
+	
 	private static int nextTradeId = 0;
 
 	private final static String QUEUE_OB = "dynamicQueues/OrderBroker";
+	private final static String QUEUE_TC = "jms/TCQueue";
+	private final static String FACTORY_TC = "jms/TradeConnectionFactory";
 	private final static String JMS_ID = "citiTrade";
 	private final static String SHORT = "SHORT";
 	private final static String LONG = "LONG";
@@ -261,10 +273,13 @@ public class AutomatedTradingController {
 					"org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 			props.setProperty(Context.PROVIDER_URL, "tcp://localhost:61616");
 
-			ctx = new InitialContext(props);
-			factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
-			orderBrokerMessageQueue = (Queue) ctx.lookup(QUEUE_OB);
-
+			orderBrokerMessageContext = new InitialContext(props);
+			orderBrokerMessageFactory = (QueueConnectionFactory) orderBrokerMessageContext.lookup("ConnectionFactory");
+			orderBrokerMessageQueue = (Queue) orderBrokerMessageContext.lookup(QUEUE_OB);
+			
+			tradeControllerMessageContext = new InitialContext();
+			tradeControllerMessageFactory = (QueueConnectionFactory) tradeControllerMessageContext.lookup(FACTORY_TC);
+			tradeControllerMessageQueue = (Queue) tradeControllerMessageContext.lookup(QUEUE_TC);
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -336,7 +351,7 @@ public class AutomatedTradingController {
 				
 				double PL_percentage = calculator.calPercentageChange(calculator.calculateCurrentValue(affectedOrder), affectedOrder.getTotal_amount());
 				//TODO
-				sendTCResponse(PL_percentage, affectedBoll.numOfSharesTraded);
+				sendTCResponse(PL_percentage, affectedBoll.numOfSharesTraded,affectedBoll.getStockSymbol());
 				
 			}
 
@@ -344,9 +359,22 @@ public class AutomatedTradingController {
 		// TODO persist trade to db
 	}
 
-	private void sendTCResponse(double pL_percentage, int numOfSharesTraded) {
+	private void sendTCResponse(double pL_percentage, int numOfSharesTraded, String symbol) {
 		// TODO Auto-generated method stub
+		TC_ATObject obj = new TC_ATObject();
+		obj.setAlgo("Bollinger Bands");
+		obj.setAmtToTrade(numOfSharesTraded);
+		if(pL_percentage>0) {
+			obj.setLoss(0);
+			obj.setProfit(pL_percentage);
+		}
+		else {
+			obj.setProfit(0);
+			obj.setLoss(pL_percentage);
+		}
+		obj.setSymbol(symbol);
 		
+		sendResponseMessage(obj);
 	}
 
 	public void RecordOrder(OrderType type, double total, OrderStatus status,
@@ -358,8 +386,9 @@ public class AutomatedTradingController {
 		newO.setTotal_amount(total);
 		newO.setType(type);
 		newO.setTrades(new ArrayList<Trade>());
-		beforeEnterOrders.add(newO);// add to the list
 		em.persist(newO);
+		beforeEnterOrders.add(newO);// add to the list
+		System.out.println("[DEBUG MSG(add beforeenterorder list):       ]"+beforeEnterOrders.size());
 	}
 
 	public void StartMonitoring() {
@@ -368,7 +397,7 @@ public class AutomatedTradingController {
 
 	private void sendTradeMessage(TradeStructureForLogging trade) {
 		try {
-			orderBrokerMessageQueueConnection = (QueueConnection) factory
+			orderBrokerMessageQueueConnection = (QueueConnection) orderBrokerMessageFactory
 					.createConnection();
 			QueueSession session = orderBrokerMessageQueueConnection
 					.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -386,7 +415,24 @@ public class AutomatedTradingController {
 			e.printStackTrace();
 		}
 	}
-
+	
+	private void sendResponseMessage(TC_ATObject trade) {
+		try {
+			tradeControllerMessageQueueConnection = (QueueConnection) tradeControllerMessageFactory
+					.createConnection();
+			QueueSession session = tradeControllerMessageQueueConnection
+					.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender sender = session.createSender(tradeControllerMessageQueue);
+			TextMessage textMsg = session.createTextMessage();
+			String text = TradingController.tradeToXML(trade);
+			textMsg.setText(text);
+			sender.send(textMsg);
+			tradeControllerMessageQueueConnection.close();
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/*
 	 * Check enter condition for every one minute for every order with the
 	 * 'BEFORE ENTER' status if the condition hit, 1. send message to order
@@ -402,6 +448,7 @@ public class AutomatedTradingController {
 				for (int i = 0; i < beforeStockList.size(); i++) {
 					bollingerStockWrapper trade = beforeStockList.get(i);
 					Order order = beforeEnterOrders.get(i);
+					System.out.println("[DEBUG MSG(loop beforeenterorder list):       ]"+beforeEnterOrders.size());
 					Stock newInfo = marketDataHandler.getStockBySymbol(trade
 							.getStockSymbol());
 					if (trade.isShortEnter(newInfo)) {
@@ -410,7 +457,6 @@ public class AutomatedTradingController {
 						TradeObject tradeToMake = new TradeObject();
 						tradeToMake.setBuy(false);
 						tradeToMake.setId(nextTradeId++);// check this. Why is
-															// it needed
 						tradeToMake.setPrice(newInfo.getAsk());
 						tradeToMake.setStock(trade.getStockSymbol());
 						tradeToMake.setToNow();
@@ -438,7 +484,6 @@ public class AutomatedTradingController {
 						sendTradeMessage(new TradeStructureForLogging(
 								tradeToMake, OrderStatus.ENTERED,
 								OrderType.LONG, i));
-
 						
 						// trade.updateEnterInfo(OrderType.LONG,
 						// newInfo.getBid());
@@ -457,7 +502,7 @@ public class AutomatedTradingController {
 	 * recorder trade, 3. change order status
 	 */
 	
-	/*
+	
 	public void monitorPriceToExit() {
 		// will there be any data lost???????????????
 		// numOfSharesTraded = (long) (totalAmount / enterPrice);
@@ -478,6 +523,15 @@ public class AutomatedTradingController {
 					// SHORT EXIT
 					if (trade.isExit(newInfo)) {
 						// TODO SEND MESSAGE
+						TradeObject tradeToMake = new TradeObject();
+						tradeToMake.setBuy(trade.getShortOrLong()==OrderType.SHORT);
+						tradeToMake.setId(nextTradeId++);// check this. Why is
+						tradeToMake.setPrice(trade.getExitPrice());
+						tradeToMake.setStock(trade.getStockSymbol());
+						tradeToMake.setToNow();
+						tradeToMake.setSize((int) trade.numOfSharesTraded);
+						TradeStructureForLogging tsfl = new TradeStructureForLogging(tradeToMake, OrderStatus.EXIT, trade.getShortOrLong(), i);
+						sendTradeMessage(tsfl);
 						// TODO ADD TRADE
 						// TODO UPDATE DATABASE
 					}
@@ -486,7 +540,7 @@ public class AutomatedTradingController {
 			}
 		}, MONITOR_TIME_INTERVAL);
 	}
-*/
+
 	public boolean isMonitoring() {
 		return isMonitoring;
 	}

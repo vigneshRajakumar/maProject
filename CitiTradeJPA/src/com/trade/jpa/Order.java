@@ -28,6 +28,7 @@ public class Order implements Serializable {
 	@Column(name = "stock_id")
 	@OneToOne
 	private Stock stock;
+	
 	@Column(name = "short_or_sell")
 	@Enumerated(EnumType.STRING)
 	private OrderType type;
@@ -38,8 +39,10 @@ public class Order implements Serializable {
 	@Column(name = "order_status")
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;// "BEFORE ENTER" "ENTERED" "EXIT"
+	
 	@Column(name = "loss_percentage")
 	private Double lossPercentage;
+	
 	@Column(name = "profit_percentage")
 	private Double profitPercentage;
 

@@ -38,16 +38,13 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 
 	@EJB 
 	AutomatedTradingController autoTradingController;
-
-	@Resource(mappedName="jms/TCQueue")	
-	Queue TCQueue;
 	
 	private static Logger LOGGER = 
 	        Logger.getLogger (AutomatedTradingTCMessageBean.class.getName ());
 	
 	private static JAXBContext context;
     private static TradeMessenger tradeMessenger;
-    private static final String ALGO_BB = "BB";
+    private static final String ALGO_BB = "Bollinger Bands";
     static 
     {
         try

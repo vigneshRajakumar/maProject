@@ -2,6 +2,8 @@ package com.trade.jpa;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -23,13 +25,13 @@ public class Order implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="order_id")
 	private int order_id;
 	
-	@Column(name = "stock_id")
-	@OneToOne
-	private Stock stock;
-	
-	@Column(name = "short_or_sell")
+	@Column(name = "stock")
+	private String stock;
+
+	@Column(name = "short_or_long")
 	@Enumerated(EnumType.STRING)
 	private OrderType type;
 	
@@ -46,8 +48,15 @@ public class Order implements Serializable {
 	@Column(name = "profit_percentage")
 	private Double profitPercentage;
 
+	@Column(name = "trader_id")
+	private int trader_id;
+	
+	@Column(name = "algo_id")
+	private int algo_id;
 	// all the trades under this order id
-	private ArrayList<Trade> allTrades;
+	
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	private List<Trade> trades;
 
 	private static final long serialVersionUID = 1L;
 
@@ -95,20 +104,20 @@ public class Order implements Serializable {
 		this.profitPercentage = profitPercentage;
 	}
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-	public ArrayList<Trade> getAllTrades() {
-		return allTrades;
+	
+	public List<Trade> getTrades() {
+		return trades;
 	}
 
-	public void setAllTrades(ArrayList<Trade> allTrades) {
-		this.allTrades = allTrades;
+	public void setTrades(List<Trade> allTrades) {
+		this.trades = allTrades;
 	}
 
-	public Stock getStock() {
+	public String getStock() {
 		return stock;
 	}
 
-	public void setStock(Stock stock) {
+	public void setStock(String stock) {
 		this.stock = stock;
 	}
 
@@ -118,6 +127,22 @@ public class Order implements Serializable {
 
 	public void setType(OrderType type) {
 		this.type = type;
+	}
+
+	public int getTrader_id() {
+		return trader_id;
+	}
+
+	public void setTrader_id(int trader_id) {
+		this.trader_id = trader_id;
+	}
+
+	public int getAlgo_id() {
+		return algo_id;
+	}
+
+	public void setAlgo_id(int algo_id) {
+		this.algo_id = algo_id;
 	}
 
 }

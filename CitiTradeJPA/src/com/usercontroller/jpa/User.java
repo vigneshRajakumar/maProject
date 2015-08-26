@@ -22,6 +22,10 @@ public class User implements Serializable {
 	
 	private List<Trade> listTrade;
 	private UserType userType;
+	
+	private String firstname;
+	private String lastname;
+	private String email;
 
 	public void setUser_ID(int id) {
 		this.user_id = id;
@@ -72,7 +76,7 @@ public class User implements Serializable {
 	public void setProfit_Lost(double profitLoss) {
 		this.profit_lost = profitLoss;
 	}
-	
+	  
 	//the user can retrieve his trades from database Table - Trade
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name="user_id")
@@ -87,13 +91,38 @@ public class User implements Serializable {
 	//the user can retrieve his trades from database Table - userType
 	@OneToOne
 	@JoinColumn(name="user_type")
-	public UserType getUserTypeString(){
+	public UserType getUserType(){
 		return this.userType;
 	}
 		
-	public void setUserTypeString(UserType userTypeObj){
+	public void setUserType(UserType userTypeObj){
 		this.userType = userTypeObj;
 	}
+	
+	/////
+	public void setfirstname(String firstname) {
+		this.firstname = firstname;
+	}
+	public String getfirstname() {
+		return this.firstname;
+	}
+	
+	public void setlastname(String lastname) {
+		this.lastname = lastname;
+	}
+	public String getlastname() {
+		return this.lastname;
+	}
+	
+	public void setemail(String email) {
+		this.email = email;
+	}
+	public String getemail() {
+		return this.email;
+	}
+
+	
+	
 	
 	
 	

@@ -24,27 +24,36 @@ public class UserController implements IUserController {
 
 	@Override
 	public boolean registerUser(String name, String passwd, double initBalance,
-			String type) {
-		TypedQuery<User> qu = em.createQuery(
-				"SELECT u FROM User AS u WHERE u.uname = :name", User.class);
-		qu.setParameter("name", name);
-		Collection<User> u = qu.getResultList();
-		if (u.size() > 0)
-			return false;
-		
-		String pwd;
-		UserType uType;
-		if ((pwd = cryptWithMD5(passwd)) != null && (uType = getUserType(type)) != null ) {
-			User newU = new User();
-			newU.setBalance(initBalance);
-			newU.setUname(name);
-			newU.setPasswd(pwd);
-			newU.setUserTypeString(uType);
-			em.persist(newU);
-			
-			return true;
-		} else{
-			System.out.println("error in creating user");
+			String type , String firstname , String lastname , String email) {
+
+		try {
+			TypedQuery<User> qu = em.createQuery(
+					"SELECT u FROM User AS u WHERE u.uname = :name", User.class);
+			qu.setParameter("name", name);
+			Collection<User> u = qu.getResultList();
+			if (u.size() > 0)
+				return false;
+
+			String pwd;
+			UserType uType = new UserType();
+
+			if ((pwd = cryptWithMD5(passwd)) != null && (uType = getUserType(type)) != null ) {
+				User newU = new User();
+				newU.setBalance(initBalance);
+				newU.setUname(name);
+				newU.setPasswd(pwd);
+				newU.setUserType(uType);
+				newU.setemail(email);
+				newU.setfirstname(firstname);
+				newU.setlastname(lastname);
+				em.persist(newU);
+
+				return true;
+			} else{
+				System.out.println("error in creating user");
+				return false;
+			}
+		}catch (Exception e){
 			return false;
 		}
 	}
@@ -54,7 +63,7 @@ public class UserController implements IUserController {
 
 		// use the encrypted password
 		String encryptedPwd = cryptWithMD5(password);
-		
+
 		System.out.println(encryptedPwd);
 		TypedQuery<User> query = em
 				.createQuery(
@@ -109,6 +118,7 @@ public class UserController implements IUserController {
 	 * userObj.setProfit_Lost(profit_Lost); em.merge(userObj); }
 	 */
 
+
 	private UserType getUserType(String _type) {
 		UserType uType = null;
 		TypedQuery<UserType> query = em.createQuery(
@@ -124,7 +134,6 @@ public class UserController implements IUserController {
 		}
 		return uType;
 
-		//
 	}
 
 	private static String cryptWithMD5(String pass) {
@@ -148,6 +157,34 @@ public class UserController implements IUserController {
 		}
 		return null;
 
+	}
+
+	@Override
+	public User getUserByID(int id) {
+
+		User userObj = null;
+		try {
+			userObj = em.find(User.class, id);
+
+		} catch (Exception e){
+			return null;
+		}
+		return userObj ;
+	}
+
+	@Override
+	public User getUserByUsername(String username) {
+
+		TypedQuery<User> query = em.createQuery("SELECT t FROM User AS t WHERE t.uname = :username", User.class);
+		query.setParameter("username", username);
+
+		User userObj = null;
+		try {
+			userObj = query.getSingleResult();
+		} catch (Exception e){
+			return null;
+		}
+		return userObj;
 	}
 
 }

@@ -3,9 +3,9 @@
 	<name>CitiTrade</name>
 	<comment></comment>
 	<projects>
-		<project>CitiTradeWeb</project>
 		<project>CitiTradeEJB</project>
 		<project>CitiTradeJPA</project>
+		<project>CitiTradeWeb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

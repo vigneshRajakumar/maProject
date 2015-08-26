@@ -55,10 +55,11 @@ public class TestTradeController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		System.out.println("true");
 		testGetAllTrade();
-		Trade tradeObj = testGetTradeByID() ;
+		//Trade tradeObj = testGetTradeByID() ;
 		
-		System.out.println(tradeObj.getTrade_ID());
+		//System.out.println(tradeObj.getTrade_ID());
 		//tradeObj.setTrade_ID(9999);
 		//testInsertNewTrade(tradeObj);
 		
@@ -66,9 +67,6 @@ public class TestTradeController extends HttpServlet {
 		
 		//tradeObj.setNum_Shares(99999);
 		//testUpdateTrade(tradeObj);
-		
-		
-		
 	}
 
 

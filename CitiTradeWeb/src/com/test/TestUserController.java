@@ -16,8 +16,6 @@ import com.usercontroller.ejb.IUserController;
 import com.usercontroller.jpa.User;
 import com.usercontroller.jpa.UserType;
 
-
-
 @WebServlet("/TestUserController")
 
 public class TestUserController extends HttpServlet {
@@ -51,10 +49,10 @@ public class TestUserController extends HttpServlet {
 		//User userObj = testGetUserByLogin("trader" , "trader");
 		//System.out.println(userObj.getUserType().getUser_Type());
 		
-		User userObj = userController.getUserByUsername("lol");
+		User userObj = userController.getUserByUsername("trader");
 		System.out.println(userObj.getUser_ID());
 		
-		User userObj2 = userController.getUserByID(11);
+		User userObj2 = userController.getUserByID(1);
 		System.out.println(userObj2.getUname());
 		
 		//userObj.setPasswd("changePassword");

@@ -8,10 +8,11 @@
         <dependent-module archiveName="java-json.jar" deploy-path="lib" handle="module:/classpath/lib/EarContent/lib/java-json.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="CitiTradeWeb.war" deploy-path="/" handle="module:/resource/CitiTradeWeb/CitiTradeWeb">
+        <dependent-module archiveName="CitiTradeJPA.jar" deploy-path="/lib" handle="module:/resource/CitiTradeJPA/CitiTradeJPA">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="CitiTradeJPA.jar" deploy-path="/lib" handle="module:/resource/CitiTradeJPA/CitiTradeJPA">
+        <dependent-module archiveName="CitiTradeWeb.war" deploy-path="/" handle="module:/resource/CitiTradeWeb/CitiTradeWeb">
+            <dependent-object/>
             <dependency-type>uses</dependency-type>
         </dependent-module>
     </wb-module>

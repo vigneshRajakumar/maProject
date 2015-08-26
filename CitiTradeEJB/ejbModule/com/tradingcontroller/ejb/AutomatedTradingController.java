@@ -32,9 +32,11 @@ import com.trade.jpa.Order;
 import com.trade.jpa.OrderStatus;
 import com.trade.jpa.OrderType;
 import com.trade.jpa.Trade;
+import com.tradingcontroller.TC_ATObject;
 import com.tradingcontroller.TradeObject;
 import com.tradingcontroller.TradeObject.Result;
-import com.tradingcontroller.mq.TradeMessenger;;
+import com.tradingcontroller.mq.TradeMessenger;
+import com.tradingcontroller.ejb.TradingController;
 
 /**
  * Session Bean implementation class AutomatedTradingController
@@ -55,13 +57,21 @@ public class AutomatedTradingController {
 	private ArrayList<bollingerStockWrapper> enteredstockList = new ArrayList<bollingerStockWrapper>();
 	private HashMap<String,TradeObject> tradeMap = new HashMap<String,TradeObject>();
 	
-	private static Context ctx;
-	private static QueueConnectionFactory factory;
+	private static Context orderBrokerMessageContext;
+	private static QueueConnectionFactory orderBrokerMessageFactory;
 	private static Queue orderBrokerMessageQueue;
 	private static QueueConnection orderBrokerMessageQueueConnection;
+	
+	private static Context tradeControllerMessageContext;
+	private static QueueConnectionFactory tradeControllerMessageFactory;
+	private static Queue tradeControllerMessageQueue;
+	private static QueueConnection tradeControllerMessageQueueConnection;
+	
 	private static int nextTradeId = 0;
 	
 	private final static String QUEUE_OB = "dynamicQueues/OrderBroker";
+	private final static String QUEUE_TC = "jms/TCQueue";
+	private final static String FACTORY_TC = "jms/TradeConnectionFactory";
 	private final static String JMS_ID = "citiTrade";
 	private final static String SHORT = "SHORT";
 	private final static String LONG = "LONG";
@@ -235,9 +245,13 @@ public class AutomatedTradingController {
 					"org.apache.activemq.jndi.ActiveMQInitialContextFactory");
 			props.setProperty(Context.PROVIDER_URL, "tcp://localhost:61616");
 
-			ctx = new InitialContext(props);
-			factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
-			orderBrokerMessageQueue = (Queue) ctx.lookup(QUEUE_OB);
+			orderBrokerMessageContext = new InitialContext(props);
+			orderBrokerMessageFactory = (QueueConnectionFactory) orderBrokerMessageContext.lookup("ConnectionFactory");
+			orderBrokerMessageQueue = (Queue) orderBrokerMessageContext.lookup(QUEUE_OB);
+			
+			tradeControllerMessageContext = new InitialContext();
+			tradeControllerMessageFactory = (QueueConnectionFactory) tradeControllerMessageContext.lookup(FACTORY_TC);
+			tradeControllerMessageQueue = (Queue) tradeControllerMessageContext.lookup(QUEUE_TC);
 			
 			
 		} catch (NamingException e) {
@@ -285,7 +299,7 @@ public class AutomatedTradingController {
 
 	private void sendTradeMessage(TradeObject trade) {
 		try {
-			orderBrokerMessageQueueConnection = (QueueConnection) factory
+			orderBrokerMessageQueueConnection = (QueueConnection) orderBrokerMessageFactory
 					.createConnection();
 			QueueSession session = orderBrokerMessageQueueConnection
 					.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -299,6 +313,23 @@ public class AutomatedTradingController {
 			orderBrokerMessageQueueConnection.close();
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void sendResponseMessage(TC_ATObject trade) {
+		try {
+			tradeControllerMessageQueueConnection = (QueueConnection) tradeControllerMessageFactory
+					.createConnection();
+			QueueSession session = tradeControllerMessageQueueConnection
+					.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender sender = session.createSender(tradeControllerMessageQueue);
+			TextMessage textMsg = session.createTextMessage();
+			String text = TradingController.tradeToXML(trade);
+			textMsg.setText(text);
+			sender.send(textMsg);
+			tradeControllerMessageQueueConnection.close();
+		} catch (JMSException e) {
 			e.printStackTrace();
 		}
 	}
@@ -390,6 +421,7 @@ public class AutomatedTradingController {
 					// SHORT EXIT
 					if (trade.isExit(newInfo)) {
 						// TODO SEND MESSAGE
+						
 						// TODO ADD TRADE
 						// TODO UPDATE DATABASE
 					}

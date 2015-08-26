@@ -3,7 +3,6 @@ package com.tradingcontroller.ejb;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
@@ -11,11 +10,9 @@ import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBContext;
 
-import com.marketdatahandler.ejb.CitiTradeMarketDataHandler;
 import com.tradingcontroller.mq.TradeMessenger;
 import com.tradingcontroller.ejb.TradingController;
 import com.tradingcontroller.TC_ATObject;

@@ -8,6 +8,8 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import com.tradingcontroller.TC_ATObject;
+import com.tradingcontroller.ejb.TradingController;
 /**
  * Message-Driven Bean implementation class for: TradingATMessageBean
  */
@@ -37,8 +39,9 @@ public class TradingATMessageBean implements MessageListener {
     		try {
     			TextMessage textMessage = (TextMessage)message;
 				String text = textMessage.getText();
-				
-			} catch (JMSException e) {
+				TC_ATObject order = TradingController.tradeFromXML(text);
+				tradingController.setRecordStatus(order);
+    		} catch (JMSException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

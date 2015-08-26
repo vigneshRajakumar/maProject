@@ -348,7 +348,7 @@ public class AutomatedTradingController {
 				
 				double PL_percentage = calculator.calPercentageChange(calculator.calculateCurrentValue(affectedOrder), affectedOrder.getTotal_amount());
 				//TODO
-				sendTCResponse(PL_percentage, affectedBoll.numOfSharesTraded);
+				sendTCResponse(PL_percentage, affectedBoll.numOfSharesTraded,affectedBoll.getStockSymbol());
 				
 			}
 
@@ -356,9 +356,22 @@ public class AutomatedTradingController {
 		// TODO persist trade to db
 	}
 
-	private void sendTCResponse(double pL_percentage, int numOfSharesTraded) {
+	private void sendTCResponse(double pL_percentage, int numOfSharesTraded, String symbol) {
 		// TODO Auto-generated method stub
+		TC_ATObject obj = new TC_ATObject();
+		obj.setAlgo("Bollinger Bands");
+		obj.setAmtToTrade(numOfSharesTraded);
+		if(pL_percentage>0) {
+			obj.setLoss(0);
+			obj.setProfit(pL_percentage);
+		}
+		else {
+			obj.setProfit(0);
+			obj.setLoss(pL_percentage);
+		}
+		obj.setSymbol(symbol);
 		
+		sendResponseMessage(obj);
 	}
 
 	public void RecordOrder(OrderType type, double total, OrderStatus status,
@@ -439,7 +452,6 @@ public class AutomatedTradingController {
 						TradeObject tradeToMake = new TradeObject();
 						tradeToMake.setBuy(false);
 						tradeToMake.setId(nextTradeId++);// check this. Why is
-															// it needed
 						tradeToMake.setPrice(newInfo.getAsk());
 						tradeToMake.setStock(trade.getStockSymbol());
 						tradeToMake.setToNow();
@@ -467,7 +479,6 @@ public class AutomatedTradingController {
 						sendTradeMessage(new TradeStructureForLogging(
 								tradeToMake, OrderStatus.ENTERED,
 								OrderType.LONG, i));
-
 						
 						// trade.updateEnterInfo(OrderType.LONG,
 						// newInfo.getBid());
@@ -505,7 +516,15 @@ public class AutomatedTradingController {
 					// SHORT EXIT
 					if (trade.isExit(newInfo)) {
 						// TODO SEND MESSAGE
-						
+						TradeObject tradeToMake = new TradeObject();
+						tradeToMake.setBuy(trade.getShortOrLong()==OrderType.SHORT);
+						tradeToMake.setId(nextTradeId++);// check this. Why is
+						tradeToMake.setPrice(trade.getExitPrice());
+						tradeToMake.setStock(trade.getStockSymbol());
+						tradeToMake.setToNow();
+						tradeToMake.setSize((int) trade.numOfSharesTraded);
+						TradeStructureForLogging tsfl = new TradeStructureForLogging(tradeToMake, OrderStatus.EXIT, trade.getShortOrLong(), i);
+						sendTradeMessage(tsfl);
 						// TODO ADD TRADE
 						// TODO UPDATE DATABASE
 					}

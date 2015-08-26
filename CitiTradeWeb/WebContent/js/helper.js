@@ -1,14 +1,41 @@
 $(document).ready(function() {
-
-	/*var url = window.location.href;
+	var url = window.location.href;
+	var username = Cookies.get("username");
 	if (url.indexOf("index.html") >= 0) {
-		checkUserOnload();
+		if (username != null) {
+			 window.location.href = "main.html";
+		}
 	} else {
-		checkUserStatus();
-	}*/
+		if (username == null) {
+			 window.location.href = "index.html";
+		}
+	}
+	
+	$("#userProfileButton").on("click", function () {
+        $("#formSubmitButton").hide();
+        getUserProfile();
+    });
 
     $("#userSettingsButton").on("click", function () {
         $("#userSettingsTabs li:nth-child(2) a").click();
+        $("#formSubmitButton").hide();
+        getUserProfile();
+    });
+    
+    /*$("input[type=number]").on("keydown", function (event) {
+    	return event.keyCode >= 48 && event.keyCode <= 57;
+    });*/
+    $("#formSubmitButton").on("click", function () {
+        $("#userSubmit").click();
+    });
+
+    $('#userProfileForm').on('keyup change', 'input, select, textarea', function(){
+        $("#formSubmitButton").show();
+    });
+
+    $(".numbersOnly").on('keyup', function () { 
+        var v = $(this).val().replace(/[^0-9\.]/g,'');
+        $(this).val(v);
     });
 });
 
@@ -57,6 +84,22 @@ function toggleLogin () {
   } else {
     obj.hide();
   }
+}
+
+//Display user profile in the modal
+function getUserProfile () {
+	$.ajax({
+	      type: "GET",
+	      url: "rest/rest/userinfo",
+	      success: function (data) {
+	    	  $("#userName").val(data.uname);
+	    	  $("#userFirstName").val(data.firstname);
+	    	  $("#userLastName").val(data.lastname);
+	    	  $("#userEmail").val(data.email);
+	    	  $("#userBalance").val(data.balance);
+	    	  $("#profitLost").val(data.profit_Lost);
+	      }
+	});
 }
 
 //Actions with registration form
@@ -131,38 +174,6 @@ $(function () {
 });
 
 $("#logout").on("click", function () {
-	$.ajax({
-		type: "GET",
-	    url: "rest/rest/logout",
-	    success: function () {
-		  window.location.href = "index.html";
-	  }
-	});
+	Cookies.remove("username");
+	window.location.href = "index.html";
 });
-
-
-function checkUserStatus () {
-	$.ajax({
-		  type: "GET",
-		  url: "rest/rest/verification",
-		  success: function (data) {
-			  console.log("checkUserStatus: " + data);
-			  if (data == "false") {
-				  window.location.href = "index.html";
-			  }
-		  }
-	});
-}
-
-function checkUserOnload () {
-	$.ajax({
-	      type: "GET",
-	      url: "rest/rest/verification",
-	      success: function (data) {
-	    	  console.log("checkUserOnload: " + data);
-	    	  if(data == "true") {
-	    		  window.location.href = "main.html";
-	    	  }
-	      }
-	});
-}

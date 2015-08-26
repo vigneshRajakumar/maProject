@@ -94,7 +94,7 @@
                             <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a data-toggle='modal' data-target='#userSettings'><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            <li id="userProfileButton"><a data-toggle='modal' data-target='#userSettings'><i class="fa fa-user fa-fw"></i> User Profile</a>
                             </li>
                             <li id="userSettingsButton"><a data-toggle='modal' data-target='#userSettings'><i class="fa fa-gear fa-fw"></i> Settings</a>
                             </li>
@@ -306,8 +306,49 @@
                             <!-- Tab panes -->
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="tabProfile">
-                                    <h4>Home Tab</h4>
-                                    <p>Lorem ipsum dolor sit amet, </p>
+                                    <form class="form-horizontal" id="userProfileForm" role="form" action="rest/rest/profile/update">
+                                      <div class="form-group">
+									    <label class="control-label col-sm-3" for="userName">Username:</label>
+									    <div class="col-sm-9">
+									      <input type="text" class="form-control" id="userName" name="userName" readonly>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="userFirstName">First Name:</label>
+									    <div class="col-sm-9">
+									      <input type="text" class="form-control" id="userFirstName" name="userFirstName" placeholder="Enter your first name" required>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="userLastName">Last Name:</label>
+									    <div class="col-sm-9">
+									      <input type="text" class="form-control" id="userLastName" name="userLastName" placeholder="Enter your last name" required>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="userEmail">Email:</label>
+									    <div class="col-sm-9">
+									      <input type="email" class="form-control" id="userEmail" name="userEmail" placeholder="Enter your email" required>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="userBalance">Balance:</label>
+									    <div class="col-sm-9"> 
+									      <input type="text" class="form-control" id="userBalance" name="userBalance" readonly>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="profitLost">P/L:</label>
+									    <div class="col-sm-9"> 
+									      <input type="text" class="form-control" id="profitLost" name="profitLost" readonly>
+									    </div>
+									  </div>
+									  <div class="form-group" id="userSubmitContainer"> 
+									    <div class="col-sm-offset-3 col-sm-9">
+									      <button type="submit" class="btn btn-default" id="userSubmit">Submit</button>
+									    </div>
+									  </div>
+									</form>
                                 </div>
                                 <div class="tab-pane fade" id="tabSettings">
                                     <h4>Settings Tab</h4>
@@ -320,7 +361,7 @@
                     <!-- /.row -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-primary" id="formSubmitButton">Submit</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -335,6 +376,9 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+
+	<!-- Cookie JavaScript -->
+    <script src="js/cookie.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="js/helper.js"></script>

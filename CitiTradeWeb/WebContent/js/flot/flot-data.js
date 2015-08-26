@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 
 //Flot Multiple Axes Line Chart
-$(function() {
+/*$(function() {
     var oilprices = [
         [1167692400000, 61.05],
         [1167778800000, 58.32],
@@ -1014,4 +1014,4 @@ $(function() {
     $("button").click(function() {
         doPlot($(this).text());
     });
-});
+});*/

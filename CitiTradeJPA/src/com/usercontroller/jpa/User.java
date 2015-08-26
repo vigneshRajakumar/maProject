@@ -79,7 +79,7 @@ public class User implements Serializable {
 	  
 	//the user can retrieve his trades from database Table - Trade
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="trader_id")
 	public List<Trade> getUserTrades() {
 		return this.listTrade;
 	}

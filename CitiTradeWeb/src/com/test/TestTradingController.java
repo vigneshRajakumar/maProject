@@ -26,11 +26,6 @@ public class TestTradingController extends HttpServlet {
 		
 	}
 	
-	/*
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		tradingController.sendInputValues("AAPL", 20.0, 16, 10,"Bollinger Bands");
-		
-	}*/
+	
 
 }

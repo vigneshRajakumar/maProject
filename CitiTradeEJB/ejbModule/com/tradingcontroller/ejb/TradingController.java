@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 @Stateless
 public class TradingController implements ITradingController {
-
 	
     private static JAXBContext context;
     
@@ -89,6 +88,23 @@ public class TradingController implements ITradingController {
 		JMSProducer jmsProducer = jmsContext.createProducer();
 		
 		jmsProducer.send(ATQueue, message);
-	}    
+	}
+	
+	
+	public String setRecordStatus(TC_ATObject obj  ){
+		
+		/*
+		String
+		String symbol = obj.getSymbol();
+		double amt = obj.getAmtToTrade();
+		double loss = obj.getLoss();
+		double profit = obj.getProfit();
+		
+		
+		System.out.println("Symbol : ")
+				*/
+		
+		return "";
+	}
 
 }

@@ -36,7 +36,6 @@ public class BolingerThread extends Thread {
 
 	public BolingerThread(String symbol, double loss, double profit,
 			double totalAmountLimit) {
-		// TODO Auto-generated constructor stub
 		this.symbol = symbol;
 		stopLoss = loss;
 		percentageProfit = profit;

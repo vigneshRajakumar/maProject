@@ -58,7 +58,7 @@ public class AutomatedTradingTCMessageBean implements MessageListener {
 			if (message instanceof TextMessage)
 			{
 				TextMessage textMessage = (TextMessage)message;
-				System.out.println("MessageBean Received:" + textMessage.getText());
+				System.out.println("ATMessageBean Received:" + textMessage.getText());
 				//This object will have only the symbol and the amount
 				TC_ATObject obj = TradingController.tradeFromXML(textMessage.getText());
 				if(obj.getAlgo().equals(ALGO_BB)) {

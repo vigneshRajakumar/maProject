@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.Stateful;
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -29,6 +30,7 @@ import javax.persistence.PersistenceContext;
 import com.marketdatahandle.jpa.Stock;
 import com.marketdatahandler.ejb.HistoricalData;
 import com.marketdatahandler.ejb.MarketDataHandlerLocal;
+import com.stocklist.ejb.IStockListController;
 import com.stocklist.ejb.StockListController;
 import com.stocklist.jpa.StockList;
 import com.trade.jpa.Order;
@@ -59,6 +61,7 @@ class TradeStructureForLogging {
 	}
 }
 
+
 @Singleton
 @LocalBean
 public class AutomatedTradingController {
@@ -66,7 +69,7 @@ public class AutomatedTradingController {
 	MarketDataHandlerLocal marketDataHandler;
 	
 	@EJB
-	StockListController stockListController;
+	IStockListController stockListController;
 
 	@PersistenceContext(unitName = "ct_projectUnit")
 	private EntityManager em;
@@ -383,8 +386,9 @@ public class AutomatedTradingController {
 		newO.setTotal_amount(total);
 		newO.setType(type);
 		newO.setTrades(new ArrayList<Trade>());
-		beforeEnterOrders.add(newO);// add to the list
 		em.persist(newO);
+		beforeEnterOrders.add(newO);// add to the list
+		System.out.println("[DEBUG MSG(add beforeenterorder list):       ]"+beforeEnterOrders.size());
 	}
 
 	public void StartMonitoring() {
@@ -444,6 +448,7 @@ public class AutomatedTradingController {
 				for (int i = 0; i < beforeStockList.size(); i++) {
 					bollingerStockWrapper trade = beforeStockList.get(i);
 					Order order = beforeEnterOrders.get(i);
+					System.out.println("[DEBUG MSG(loop beforeenterorder list):       ]"+beforeEnterOrders.size());
 					Stock newInfo = marketDataHandler.getStockBySymbol(trade
 							.getStockSymbol());
 					if (trade.isShortEnter(newInfo)) {
@@ -497,7 +502,7 @@ public class AutomatedTradingController {
 	 * recorder trade, 3. change order status
 	 */
 	
-	/*
+	
 	public void monitorPriceToExit() {
 		// will there be any data lost???????????????
 		// numOfSharesTraded = (long) (totalAmount / enterPrice);
@@ -535,7 +540,7 @@ public class AutomatedTradingController {
 			}
 		}, MONITOR_TIME_INTERVAL);
 	}
-*/
+
 	public boolean isMonitoring() {
 		return isMonitoring;
 	}

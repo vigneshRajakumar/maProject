@@ -98,17 +98,15 @@ public class portfolioRequestHandler implements portfolioRequestHandlerRemote,
 			if (order.getType().equals(OrderType.SHORT)) {
 				double buyPrice = market.getStockBySymbol(order.getStock())
 						.getAsk();
-				double marketValue = (buyPrice * trades.get(0).getNum_Shares());
-				double enterPrice = trades.get(0).getPrice_PerShare();
-				double numOfShares = trades.get(0).getNum_Shares();
+				double marketValue = (buyPrice * getTradeWithType(trades, "sell").getNum_Shares());
+				double enterPrice = getTradeWithType(trades, "sell").getPrice_PerShare();
+				double numOfShares = getTradeWithType(trades, "sell").getNum_Shares();
+				amountLeft = getAmountLeft(enterPrice, numOfShares, order.getTotal_amount());
 				return amountLeft + marketValue;
 			} else {
-				double sellPrice = market.getStockBySymbol(order.getStock())
-						.getBid();
-				double marketValue = (sellPrice * trades.get(0).getNum_Shares());
-				amountLeft = order.getTotal_amount()
-						- (trades.get(0).getPrice_PerShare() * trades.get(0)
-								.getNum_Shares());
+				double sellPrice = market.getStockBySymbol(order.getStock()).getBid();
+				double marketValue = (sellPrice * getTradeWithType(trades, "buy").getNum_Shares());
+				amountLeft = order.getTotal_amount()- (getTradeWithType(trades, "buy").getPrice_PerShare() * getTradeWithType(trades, "buy").getNum_Shares());
 				return amountLeft + marketValue;
 			}
 

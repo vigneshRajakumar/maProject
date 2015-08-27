@@ -13,6 +13,11 @@ body {
     background-color: #fff;
 }
 
+#page-wrapper.tradeWrapper {
+    margin: 0;
+    padding-top: 15px;
+}
+
 @media(min-width:768px) {
     #page-wrapper {
         position: inherit;

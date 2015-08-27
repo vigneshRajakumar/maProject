@@ -53,7 +53,7 @@ public class StockInfoHelper {
 			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("[MARKET DATA HANDLER] get stock by symbol has error parsing some attributes(not important)");
 		}
 
 		return sto;
@@ -90,7 +90,8 @@ public class StockInfoHelper {
 			String postFix = "&env=store://datatables.org/alltableswithkeys&format=json";
 			URL _url = new URL(String.format("%sq=%s%s", BASE_URL, query,
 					postFix));
-
+			
+			System.out.println("[MARKET] query symbol: "+ _url.toString());
 			HttpURLConnection con = (HttpURLConnection) _url.openConnection();
 			con.setRequestMethod("GET");
 			int responseCode = con.getResponseCode();

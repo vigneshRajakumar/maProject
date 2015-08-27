@@ -99,18 +99,10 @@ public class AutomatedTradingController {
 	private final static String SHORT = "SHORT";
 	private final static String LONG = "LONG";
 	private final static int TIME_PERIOD = -20;
-<<<<<<< HEAD
+
 	private final static int MONITOR_TIME_INTERVAL = 5000;// monitor the data
 															// every one minute
 	
-=======
-
-	private final static int MONITOR_TIME_INTERVAL = 5000;// monitor the
-															// data
-
-	// every one minute
->>>>>>> 10f40dd4b75345735247cb84ec7df56d9034b5de
-
 	private class bollingerStockWrapper {
 		private String stockSymbol;
 		private int numOfSharesTraded;
@@ -539,64 +531,6 @@ public class AutomatedTradingController {
 	public void monitorPriceToEnter() {
 		Timer timer = new Timer();
 		// Schedule to run after every 1 minuts(3000 millisecond)
-<<<<<<< HEAD
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				System.out.println("[AUTO ALGO-monitor enter] " );
-				ArrayList<Integer> changedStatusIndex = new ArrayList<Integer>();
-				for (int i = 0; i < beforeStockList.size(); i++) {
-					bollingerStockWrapper trade = beforeStockList.get(i);
-					Order order = beforeEnterOrders.get(i);
-					System.out.println("[AUTO ALGO-monitor enter][DEBUG MSG(loop beforeenterorder symbol):       ]"+order.getStock());
-					Stock newInfo = marketDataHandler.getStockBySymbol(trade
-							.getStockSymbol());
-					if (trade.isShortEnter(newInfo)) {
-						// enter short
-						// TODO SEND MESSAGE, IF SUCESS
-						TradeObject tradeToMake = new TradeObject();
-						tradeToMake.setBuy(false);
-						tradeToMake.setId(nextTradeId++);// check this. Why is
-						tradeToMake.setPrice(newInfo.getAsk());
-						tradeToMake.setStock(trade.getStockSymbol());
-						tradeToMake.setToNow();
-						tradeToMake.setSize((int) trade.numOfSharesTraded);
-
-						sendTradeMessage(new TradeStructureForLogging(
-								tradeToMake, OrderStatus.ENTERED,
-								OrderType.SHORT, i));
-						System.out.println("[AUTO ALGO-monitor enter sort- sent msg]");
-						// update order
-
-						// trade.updateEnterInfo(OrderType.SHORT,
-						// newInfo.getAsk());
-						changedStatusIndex.add(i);
-
-					} else if (trade.isLongEnter(newInfo)) {
-						// enter long
-						// TODO SEND MESSAGE, IF SUCESS
-						TradeObject tradeToMake = new TradeObject();
-						tradeToMake.setBuy(true);
-						tradeToMake.setId(nextTradeId++);
-						tradeToMake.setPrice(newInfo.getBid());
-						tradeToMake.setStock(trade.getStockSymbol());
-						tradeToMake.setToNow();
-						tradeToMake.setSize((int) trade.numOfSharesTraded);
-						sendTradeMessage(new TradeStructureForLogging(
-								tradeToMake, OrderStatus.ENTERED,
-								OrderType.LONG, i));
-						System.out.println("[AUTO ALGO-monitor enter long- sent msg]");
-						// trade.updateEnterInfo(OrderType.LONG,
-						// newInfo.getBid());
-						changedStatusIndex.add(i);
-
-					}
-
-				}
-				System.out.println("[AUTO ALGO-monitor exit]");
-			}
-		},0, MONITOR_TIME_INTERVAL);
-=======
 		timer.schedule(new TimerTaskCheckEnter() /*
 												 * {
 												 * 
@@ -687,7 +621,6 @@ public class AutomatedTradingController {
 												 * 
 												 * } } }
 												 */, 0, MONITOR_TIME_INTERVAL);
->>>>>>> 10f40dd4b75345735247cb84ec7df56d9034b5de
 	}
 
 	/*
@@ -702,39 +635,6 @@ public class AutomatedTradingController {
 
 		Timer timer = new Timer();
 		// Schedule to run after every 1 minute
-<<<<<<< HEAD
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				System.out.println("[AUTO ALGO-monitor exit] " );
-				ArrayList<Integer> changedStatusIndex = new ArrayList<Integer>();
-				for (int i = 0; i < enteredstockList.size(); i++) {
-					bollingerStockWrapper trade = enteredstockList.get(i);
-					Order order = EnteredOrders.get(i);
-					Stock newInfo = marketDataHandler.getStockBySymbol(trade
-							.getStockSymbol());
-
-					// SHORT EXIT
-					// SHORT EXIT
-					if (trade.isExit(newInfo)) {
-						// TODO SEND MESSAGE
-						TradeObject tradeToMake = new TradeObject();
-						tradeToMake.setBuy(trade.getShortOrLong()==OrderType.SHORT);
-						tradeToMake.setId(nextTradeId++);// check this. Why is
-						tradeToMake.setPrice(trade.getExitPrice());
-						tradeToMake.setStock(trade.getStockSymbol());
-						tradeToMake.setToNow();
-						tradeToMake.setSize((int) trade.numOfSharesTraded);
-						TradeStructureForLogging tsfl = new TradeStructureForLogging(tradeToMake, OrderStatus.EXIT, trade.getShortOrLong(), i);
-						sendTradeMessage(tsfl);
-						// TODO ADD TRADE
-						// TODO UPDATE DATABASE
-					}
-				}
-
-			}
-		}, 0,MONITOR_TIME_INTERVAL);
-=======
 		timer.schedule(new TimerTaskCheckExit() /*
 												 * {
 												 * 
@@ -790,7 +690,6 @@ public class AutomatedTradingController {
 												 * 
 												 * } }
 												 */, 0, MONITOR_TIME_INTERVAL);
->>>>>>> 10f40dd4b75345735247cb84ec7df56d9034b5de
 	}
 
 	public boolean isMonitoring() {

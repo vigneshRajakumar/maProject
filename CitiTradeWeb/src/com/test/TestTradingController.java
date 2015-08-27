@@ -30,7 +30,7 @@ public class TestTradingController extends HttpServlet {
 		
 		//tradingController.setRecordStatus(tradeResponseObj);
 		
-		tradingController.sendInputValues("CHL", 1000, 0.01, 0.01,"Bollinger Bands");
+		tradingController.sendInputValues("aapl", 1000, 0.01, 0.01,"Two Moving Averages");
 		//tradingController.sendMsgToQueue("Hello Kitty");
 		
 		try {

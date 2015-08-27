@@ -13,9 +13,15 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
+    
     <!-- Datatable CSS -->
     <link href="css/dataTables.bootstrap.min.css" rel="stylesheet"></link>
+    
+    <!-- JQuery UI CSS -->
+    <link href="css/jquery-ui.css" rel="stylesheet">
+    
+    <!-- Bootstrap Toggle CSS -->
+    <link href="css/bootstrap-toggle.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/helper.css" rel="stylesheet">
@@ -99,7 +105,7 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
-                            <li><a data-toggle='modal' data-target='#userSettings'><i class="fa fa-user fa-fw"></i> User Profile</a>
+                            <li id="userProfileButton"><a data-toggle='modal' data-target='#userSettings'><i class="fa fa-user fa-fw"></i> User Profile</a>
                             </li>
                             <li id="userSettingsButton"><a data-toggle='modal' data-target='#userSettings'><i class="fa fa-gear fa-fw"></i> Settings</a>
                             </li>
@@ -126,6 +132,7 @@
                     <thead>
                         <tr>
                             <th>Symbol</th>
+                            <th>Company Name</th>
                         </tr>
                     </thead>
                     <tbody id="stocksList">
@@ -161,10 +168,11 @@
                                     <table class="table table-hover" id="history" cellspacing="0" width="100%">
                                         <thead>
                                             <tr>
-                                                <th width="25%">Stock Symbol</th>
+                                                <th width="20%">Stock Symbol</th>
                                                 <th width="10%">Type</th>
-                                                <th width="20%"># Shares</th>
-                                                <th width="30%">Price per Share</th>
+                                                <th width="25%">Algorithm</th>
+                                                <th width="15%"># Shares</th>
+                                                <th width="25%">Price per Share</th>
                                             </tr>
                                         </thead>
                                         <tbody id="historyList">
@@ -178,8 +186,36 @@
                         <!-- /.panel -->
                     </div>
                     <!-- /.col-lg-12 -->
+
+                    <div class="col-lg-12 col-md-12 right_bottom">
+                        <div class="panel panel-ct">
+                            <div class="panel-heading">Your Portfolio</div>
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="portfolio" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th width="15%">Stock Symbol</th>
+                                                <th width="15%">Status</th>
+                                                <th width="15%">Initial Amount $</th>
+                                                <th width="15%">Final Amount $</th>
+                                                <th width="15%">Percentage Change %</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="portfolioList">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.table-responsive -->
+                            </div>
+                            <!-- /.panel-body -->
+                        </div>
+                        <!-- /.panel -->
+                    </div>
+                    <!-- /.col-lg-12 -->
                 </div>
-                <!-- /history table -->
+                <!-- /tables -->
 
                 <div class="col-lg-4 col-md-4">
                     <div class="panel panel-red">
@@ -187,36 +223,48 @@
                             Trade Now !
                         </div>
                         <div class="panel-body">
-                            <form class="form-horizontal" role="form">
+                            <form class="form-horizontal" role="form" action="rest/rest/trade">
                                 <div class="form-group">
                                     <label class="control-label col-sm-3" for="stock">Stock:</label>
                                     <div class="col-sm-9">
-                                      <input type="text" class="form-control" id="stock" placeholder="Enter stock name">
+                                      <input type="text" class="form-control" id="stock" placeholder="Enter symbol">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3" for="amount">Amount:</label>
-                                    <div class="col-sm-9"> 
-                                      <input type="number" min="1" class="form-control" id="amount" placeholder="Enter max shares">
+                                    <div class="col-sm-9">
+                                      <input type="number" min="1" class="form-control numbersOnly" id="amount" placeholder="Enter $ to trade">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5" for=""percentProfit"">Max % Profit:</label>
+                                    <div class="col-sm-7"> 
+                                      <input type="number" min="1" class="form-control numbersOnly" id="percentProfit" placeholder="%">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5" for=""percentLoss"">Max % Loss:</label>
+                                    <div class="col-sm-7"> 
+                                      <input type="number" min="1" class="form-control numbersOnly" id="percentLoss" placeholder="%">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3" for="method">Method:</label>
                                     <div class="col-sm-9">
                                         <div class="radio">
-                                            <label><input type="radio" name="method">Two Moving Averages</label>
+                                            <label><input type="radio" name="method" value="TM">Two Moving Averages</label>
                                         </div>
                                         <div class="radio">
-                                            <label><input type="radio" name="method">Bollinger Bands</label>
+                                            <label><input type="radio" name="method" value="BB">Bollinger Bands</label>
                                         </div>
                                         <div class="radio">
-                                            <label><input type="radio" name="method">Price Breakout</label>
+                                            <label><input type="radio" name="method" value="PB">Price Breakout</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group"> 
                                     <div class="col-sm-offset-5 col-sm-3">
-                                        <button type="submit" class="btn btn-danger btn-circle trade_button">
+                                        <button type="submit" class="btn btn-danger btn-circle btn-lg trade_button">
                                             <i class="fa fa-check"></i>
                                         </button>
                                     </div>
@@ -236,62 +284,26 @@
                 <!-- /.col-lg-4 -->
             </div>
             <!-- /.row -->
-
-            <div class="row right_bottom">
-                <div class="col-lg-12 col-md-12">
-                    <div class="panel panel-ct">
-                        <div class="panel-heading">Your Portfolio</div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover" id="portfolio" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th width="35%">Name</th>
-                                            <th width="25%">Value</th>
-                                            <th width="40%">Change Net / %</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="portfolioList">
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-12 -->
-
-                <div id="stockGraph">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    The Graph
-                                </div>
-                                <!-- /.panel-heading -->
-                                <div class="panel-body">
-                                    <div class="flot-chart">
-                                        <div class="flot-chart-content" id="flot-line-chart-multi"></div>
-                                    </div>
-                                </div>
-                                <!-- /.panel-body -->
-                            </div>
-                            <!-- /.panel -->
-                        </div>
-                    </div>
-                </div>
-                <!-- /#stockGraph -->
-
-            </div>
-            <!-- /.row -->
         </div>
         <!-- /#page-wrapper -->
 
     </div>
     <!-- /#wrapper -->
+    
+    <div id="stockGraph">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-float">
+                    <div class="panel-body" id="stockImageContainer">
+                        <img id="stockImage" src="css/img/loading.gif">
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+        </div>
+    </div>
+    <!-- /#stockGraph -->
 
     <!-- Modal -->
     <div class="modal fade" id="userSettings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -308,12 +320,69 @@
                             <!-- Tab panes -->
                             <div class="tab-content">
                                 <div class="tab-pane fade in active" id="tabProfile">
-                                    <h4>Home Tab</h4>
-                                    <p>Lorem ipsum dolor sit amet, </p>
+                                    <form class="form-horizontal" id="userProfileForm" role="form" action="rest/rest/profile/update">
+                                      <div class="form-group">
+									    <label class="control-label col-sm-3" for="userName">Username:</label>
+									    <div class="col-sm-9">
+									      <input type="text" class="form-control" id="userName" name="userName" readonly>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="userFirstName">First Name:</label>
+									    <div class="col-sm-9">
+									      <input type="text" class="form-control" id="userFirstName" name="userFirstName" placeholder="Enter your first name" required>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="userLastName">Last Name:</label>
+									    <div class="col-sm-9">
+									      <input type="text" class="form-control" id="userLastName" name="userLastName" placeholder="Enter your last name" required>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="userEmail">Email:</label>
+									    <div class="col-sm-9">
+									      <input type="email" class="form-control" id="userEmail" name="userEmail" placeholder="Enter your email" required>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="userBalance">Balance:</label>
+									    <div class="col-sm-9"> 
+									      <input type="text" class="form-control" id="userBalance" name="userBalance" readonly>
+									    </div>
+									  </div>
+									  <div class="form-group">
+									    <label class="control-label col-sm-3" for="profitLost">P/L:</label>
+									    <div class="col-sm-9"> 
+									      <input type="text" class="form-control" id="profitLost" name="profitLost" readonly>
+									    </div>
+									  </div>
+									  <div class="form-group" id="userSubmitContainer"> 
+									    <div class="col-sm-offset-3 col-sm-9">
+									      <button type="submit" class="btn btn-default" id="userSubmit">Submit</button>
+									    </div>
+									  </div>
+									</form>
                                 </div>
                                 <div class="tab-pane fade" id="tabSettings">
-                                    <h4>Settings Tab</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    <div class="row settingRow">
+                                    	<div class="col-md-offset-3 col-md-3 settingTitle">Setting 1</div>
+                                    	<div class="col-md-6">
+                                    		<input type="checkbox" checked data-toggle="toggle" data-onstyle="primary" data-offstyle="danger">
+                                    	</div>
+                                    </div>
+                                    <div class="row settingRow">
+                                    	<div class="col-md-offset-3 col-md-3 settingTitle">Setting 2</div>
+                                    	<div class="col-md-6">
+                                    		<input type="checkbox" checked data-toggle="toggle" data-onstyle="primary" data-offstyle="danger">
+                                    	</div>
+                                    </div>
+                                    <div class="row settingRow">
+                                    	<div class="col-md-offset-3 col-md-3 settingTitle">Setting 3</div>
+                                    	<div class="col-md-6">
+                                    		<input type="checkbox" checked data-toggle="toggle" data-onstyle="primary" data-offstyle="danger">
+                                    	</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -322,7 +391,7 @@
                     <!-- /.row -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-primary" id="formSubmitButton">Submit</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -334,11 +403,12 @@
 
     <!-- jQuery -->
     <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
-    <! -- Datatable JavaScript -->
+    <!-- Datatable JavaScript -->
     <script src="js/jquery.dataTables.min.js"></script>
     <script src="js/dataTables.bootstrap.min.js"></script>
 
@@ -351,10 +421,15 @@
     <script src="js/flot/jquery.flot.tooltip.min.js"></script>
     <script src="js/flot/flot-data.js"></script>
     
+    <!-- Cookie JavaScript -->
+    <script src="js/cookie.js"></script>
+    
+    <!-- Bootstrap Toggle JavaScript -->
+    <script src="js/bootstrap-toggle.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
-    <script src="js/main.js"></script>
     <script src="js/helper.js"></script>
+    <script src="js/main.js"></script>
 
 </body>
 

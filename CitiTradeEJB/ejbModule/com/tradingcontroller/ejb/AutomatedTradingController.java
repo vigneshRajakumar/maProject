@@ -103,6 +103,7 @@ public class AutomatedTradingController {
 	private final static int TIME_PERIOD = -20;
 	private final static int MONITOR_TIME_INTERVAL = 60000;// monitor the data
 															// every one minute
+	
 
 	private class bollingerStockWrapper {
 		private String stockSymbol;

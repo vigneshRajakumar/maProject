@@ -379,7 +379,7 @@ table.dataTable thead .sorting:after {
 }
 
 .badge-corner {
-  background: red;
+  background-color: #F22613;
   position: relative;
   top: -10px;
   left: -12px;
@@ -391,6 +391,29 @@ table.dataTable thead .sorting:after {
 
 .table-responsive {
 	overflow-x: hidden;
+}
+
+.dropdown-menu li {
+	cursor: pointer;
+}
+
+#userSubmitContainer {
+	display: none;
+}
+
+#userProfileForm {
+	margin: 15px 0;
+}
+
+.toggle, .toggle-on, .toggle-off, .toggle-handle { border-radius: 20px !important; }
+
+.settingRow {
+	margin: 20px 0;
+}
+
+.settingTitle {
+	padding: 5px;
+	font-size: 16px;
 }
 
 /**********************

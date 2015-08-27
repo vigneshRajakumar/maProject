@@ -101,7 +101,7 @@ public class AutomatedTradingController {
 	private final static String SHORT = "SHORT";
 	private final static String LONG = "LONG";
 	private final static int TIME_PERIOD = -20;
-	private final static int MONITOR_TIME_INTERVAL = 1000;// monitor the data
+	private final static int MONITOR_TIME_INTERVAL = 5000;// monitor the data
 															// every one minute
 
 	private class bollingerStockWrapper {
@@ -505,8 +505,9 @@ public class AutomatedTradingController {
 					}
 
 				}
+				System.out.println("[AUTO ALGO-monitor exit]");
 			}
-		}, MONITOR_TIME_INTERVAL);
+		},0, MONITOR_TIME_INTERVAL);
 	}
 
 	/*
@@ -552,7 +553,7 @@ public class AutomatedTradingController {
 				}
 
 			}
-		}, MONITOR_TIME_INTERVAL);
+		}, 0,MONITOR_TIME_INTERVAL);
 	}
 
 	public boolean isMonitoring() {

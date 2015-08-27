@@ -45,6 +45,7 @@ public class HistoricalInfoHelper {
 
 		URL _url = new URL(String.format("%s%s%s", base, query,postFix));
 
+		System.out.println("[MARKET] query: "+_url.toString());
 		HttpURLConnection con = (HttpURLConnection) _url.openConnection();
 		con.setRequestMethod("GET");
 		int responseCode = con.getResponseCode();

@@ -61,13 +61,12 @@ class TradeStructureForLogging {
 	}
 }
 
-
 @Singleton
 @LocalBean
 public class AutomatedTradingController {
 	@EJB
 	MarketDataHandlerLocal marketDataHandler;
-	
+
 	@EJB
 	IStockListController stockListController;
 
@@ -79,19 +78,18 @@ public class AutomatedTradingController {
 	private static ArrayList<bollingerStockWrapper> beforeStockList = new ArrayList<bollingerStockWrapper>();
 	private static ArrayList<bollingerStockWrapper> enteredstockList = new ArrayList<bollingerStockWrapper>();
 
-	
 	private HashMap<String, TradeStructureForLogging> tradeMap = new HashMap<String, TradeStructureForLogging>();
 	private CalculationHelper calculator = new CalculationHelper();
 	private static QueueConnectionFactory orderBrokerMessageFactory;
 	private static Context orderBrokerMessageContext;
 	private static Queue orderBrokerMessageQueue;
 	private static QueueConnection orderBrokerMessageQueueConnection;
-	
+
 	private static Context tradeControllerMessageContext;
 	private static QueueConnectionFactory tradeControllerMessageFactory;
 	private static Queue tradeControllerMessageQueue;
 	private static QueueConnection tradeControllerMessageQueueConnection;
-	
+
 	private static int nextTradeId = 0;
 
 	private final static String QUEUE_OB = "dynamicQueues/OrderBroker";
@@ -101,9 +99,17 @@ public class AutomatedTradingController {
 	private final static String SHORT = "SHORT";
 	private final static String LONG = "LONG";
 	private final static int TIME_PERIOD = -20;
+<<<<<<< HEAD
 	private final static int MONITOR_TIME_INTERVAL = 5000;// monitor the data
 															// every one minute
 	
+=======
+
+	private final static int MONITOR_TIME_INTERVAL = 5000;// monitor the
+															// data
+
+	// every one minute
+>>>>>>> 10f40dd4b75345735247cb84ec7df56d9034b5de
 
 	private class bollingerStockWrapper {
 		private String stockSymbol;
@@ -117,6 +123,7 @@ public class AutomatedTradingController {
 		private double percentageProfit;
 		private double standardDeviation;
 		private final static double BAND_WIDTH = 0.5;
+		private boolean isPending = false;
 
 		// constructor
 		public bollingerStockWrapper(String symbol, double loss, double profit,
@@ -130,10 +137,12 @@ public class AutomatedTradingController {
 		}
 
 		public void run() {
+			System.out.println("[WRAPPER RUN]");
 			// get the historical data
 			// calculate sigma
 			standardDeviation = getStd(getHistoricalData());
-			System.out.println("[AUTO ALGO]: stock " + stockSymbol+" mean: " +movingAverage+"  std: " + standardDeviation);
+			System.out.println("[AUTO ALGO]: stock " + stockSymbol + " mean: "
+					+ movingAverage + "  std: " + standardDeviation);
 			// loop to find entry condition
 
 		}
@@ -149,9 +158,9 @@ public class AutomatedTradingController {
 			calReturn.add(Calendar.DATE, TIME_PERIOD);
 			data = marketDataHandler.getHistoricalDataBySymbol(stockSymbol,
 					calReturn.get(Calendar.YEAR),
-					calReturn.get(Calendar.MONTH)+1,
+					calReturn.get(Calendar.MONTH) + 1,
 					calReturn.get(Calendar.DAY_OF_MONTH),
-					today.get(Calendar.YEAR), today.get(Calendar.MONTH)+1,
+					today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1,
 					today.get(Calendar.DAY_OF_MONTH));
 
 			return data;
@@ -172,18 +181,22 @@ public class AutomatedTradingController {
 				sumDiff += Math.pow((d.getAdj_colse() - movingAverage), 2);
 			}
 			return Math.sqrt(sumDiff / data.size());
-			
+
 		}
 
 		public void updateEnterInfo(OrderType type, double price) {
 			enterPrice = price;
 			shortOrLong = type;
 			numOfSharesTraded = (int) (totalAmount / price);
-			System.out.println(String.format("[AUTO ALGO - updateEnterInfo] : enterPrice: %f\nNumber of shares: %d", enterPrice, numOfSharesTraded));
+			System.out
+					.println(String
+							.format("[AUTO ALGO - updateEnterInfo] : enterPrice: %f\nNumber of shares: %d",
+									enterPrice, numOfSharesTraded));
 		}
 
 		public boolean isShortEnter(Stock marketStockInfo) {
-			//current bid(sell) price is higher than the average more than 2 std
+			// current bid(sell) price is higher than the average more than 2
+			// std
 			if ((marketStockInfo.getBid() - movingAverage) > (BAND_WIDTH * standardDeviation)) {
 				updateEnterInfo(OrderType.SHORT, marketStockInfo.getBid());
 				return true;
@@ -192,7 +205,7 @@ public class AutomatedTradingController {
 		}
 
 		public boolean isLongEnter(Stock marketStockInfo) {
-			//current ask(buy) price is lower than the average more than 2 std
+			// current ask(buy) price is lower than the average more than 2 std
 			if ((movingAverage - marketStockInfo.getAsk()) > (BAND_WIDTH * standardDeviation)) {
 				updateEnterInfo(OrderType.LONG, marketStockInfo.getAsk());
 				return true;
@@ -206,16 +219,34 @@ public class AutomatedTradingController {
 			double percentagePL;
 			if (shortOrLong.equals(OrderType.SHORT)) {
 				percentagePL = checkLossOrGainPercentage(ask, enterPrice);
-				if ((percentagePL < (-stopLoss))
-						|| (percentagePL > percentageProfit)) {
+				System.out
+						.println(String
+								.format("[AUTO ALGO- check exit] stock: %s,    percentage P/L: %f,   type: %s",
+										stockSymbol, percentagePL, "short"));
+				if ((percentagePL <= (-stopLoss))
+						|| (percentagePL >= percentageProfit)) {
 					exitPrice = ask;
+					System.out
+							.println(String
+									.format("[AUTO ALGO- exit] stock: %s,    percentage P/L: %f,   type: %s,   buy price: %d",
+											stockSymbol, percentagePL, "short",
+											ask));
 					return true;
 				}
 			} else if (shortOrLong.equals(OrderType.LONG)) {
 				percentagePL = checkLossOrGainPercentage(enterPrice, bid);
-				if ((percentagePL < (-stopLoss))
-						|| (percentagePL > percentageProfit)) {
+				System.out
+						.println(String
+								.format("[AUTO ALGO- check exit] stock: %s,    percentage P/L: %f,   type: %s",
+										stockSymbol, percentagePL, "Long"));
+				if ((percentagePL <= (-stopLoss))
+						|| (percentagePL >= percentageProfit)) {
 					exitPrice = bid;
+					System.out
+							.println(String
+									.format("[AUTO ALGO- exit] stock: %s,    percentage P/L: %f,   type: %s,   sell price: %d",
+											stockSymbol, percentagePL, "long",
+											ask));
 					return true;
 				}
 			}
@@ -232,9 +263,10 @@ public class AutomatedTradingController {
 			return stockSymbol;
 		}
 
-		public int getNumOfShares(){
+		public int getNumOfShares() {
 			return numOfSharesTraded;
 		}
+
 		public double getEnterPrice() {
 			return enterPrice;
 		}
@@ -245,6 +277,14 @@ public class AutomatedTradingController {
 
 		public OrderType getShortOrLong() {
 			return shortOrLong;
+		}
+
+		public void setPending(boolean is) {
+			isPending = is;
+		}
+
+		public boolean getIsPending() {
+			return isPending;
 		}
 
 		public double getTotalAmount() {
@@ -279,12 +319,16 @@ public class AutomatedTradingController {
 			props.setProperty(Context.PROVIDER_URL, "tcp://localhost:61616");
 
 			orderBrokerMessageContext = new InitialContext(props);
-			orderBrokerMessageFactory = (QueueConnectionFactory) orderBrokerMessageContext.lookup("ConnectionFactory");
-			orderBrokerMessageQueue = (Queue) orderBrokerMessageContext.lookup(QUEUE_OB);
-			
+			orderBrokerMessageFactory = (QueueConnectionFactory) orderBrokerMessageContext
+					.lookup("ConnectionFactory");
+			orderBrokerMessageQueue = (Queue) orderBrokerMessageContext
+					.lookup(QUEUE_OB);
+
 			tradeControllerMessageContext = new InitialContext();
-			tradeControllerMessageFactory = (QueueConnectionFactory) tradeControllerMessageContext.lookup(FACTORY_TC);
-			tradeControllerMessageQueue = (Queue) tradeControllerMessageContext.lookup(QUEUE_TC);
+			tradeControllerMessageFactory = (QueueConnectionFactory) tradeControllerMessageContext
+					.lookup(FACTORY_TC);
+			tradeControllerMessageQueue = (Queue) tradeControllerMessageContext
+					.lookup(QUEUE_TC);
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -302,90 +346,130 @@ public class AutomatedTradingController {
 				symbol, loss, profit, totalAmountLimit);
 		bollStockTrade.run();
 		beforeStockList.add(bollStockTrade);
-		RecordOrder(symbol,OrderType.NONE, totalAmountLimit,
+		RecordOrder(symbol, OrderType.NONE, totalAmountLimit,
 				OrderStatus.BEFORE_ENTERED, loss, profit);
 	}
 
 	public void RecordTrade(TradeObject trade) {
-		System.out.println("nexttrade: "+nextTradeId);
+		System.out.println("nexttrade: " + nextTradeId);
 		if (trade.getResult() == Result.FILLED) {
 			// TODO Change open position
 			System.out.println("[AUTO ALGO] Result is filled");
 			TradeStructureForLogging tradeToBeRecord = tradeMap.get(String
 					.valueOf(trade.getId()));
+
 			int index = tradeToBeRecord.index;
 			OrderType type = tradeToBeRecord.type;
 			OrderStatus status = tradeToBeRecord.status;
-			Order affectedOrder;
-			bollingerStockWrapper affectedBoll;
-			if(status == OrderStatus.ENTERED){
-				//update the looping list
-				affectedOrder = beforeEnterOrders.remove(index);
-				affectedBoll = beforeStockList.remove(index);
-				enteredstockList.add(affectedBoll);
-				EnteredOrders.add(affectedOrder);
-				
-				//create trade object
-				String Tradetype = (type.equals(OrderType.LONG) ? "buy" : "sell");
-				StockList stock = stockListController.getStockListByName(affectedOrder.getStock());
-				Trade newTrade = calculator.createTrade(Tradetype, affectedOrder.getalgo_id(), affectedBoll.getEnterPrice(), affectedBoll.getNumOfShares(), affectedOrder.getTrader_id(), stock);
-				
-				System.out.println("!!!!!!!DEBUG MSG!!!!!!!!  Created an new trade with symbol "+affectedOrder.getStock()+" at "+Tradetype);
-				//update order object
-				affectedOrder.setStatus(status);
-				affectedOrder.setType(type);
-				affectedOrder.getTrades().add(newTrade);
-				System.out.println("!!!!!!!DEBUG MSG!!!!!!!!  Update the order status to " + status+" with trade type "+Tradetype);
-				em.persist(newTrade);
-			}else{//exit statuts
-				affectedOrder = EnteredOrders.remove(index);
-				affectedBoll = enteredstockList.remove(index);
+			Order affectedOrder = beforeEnterOrders.get(index);
+			bollingerStockWrapper affectedBoll = beforeStockList.get(index);
+			System.out.println("[AUTO ALGO] record trade: " + type + ' '
+					+ status + "Pending:  " + affectedBoll.getIsPending());
+			if (affectedBoll.getIsPending())
+				if (status == OrderStatus.ENTERED) {
+					// update the looping list
+					System.out.println("[AUTO ALGO] size: "
+							+ beforeEnterOrders.size() + ' '
+							+ beforeStockList.size());
+					beforeEnterOrders.remove(index);
+					beforeStockList.remove(index);
+					affectedBoll.setPending(false);
+					enteredstockList.add(affectedBoll);
+					EnteredOrders.add(affectedOrder);
 
-				
-				//create trade object
-				String Tradetype = (type.equals(OrderType.LONG) ? "sell" : "buy");
-				StockList stock = stockListController.getStockListByName(affectedOrder.getStock());
-				Trade newTrade = calculator.createTrade(Tradetype, affectedOrder.getalgo_id(), affectedBoll.getEnterPrice(), affectedBoll.getNumOfShares(), affectedOrder.getTrader_id(), stock);
-				
-				System.out.println("!!!!!!!DEBUG MSG!!!!!!!!  Created an new trade with symbol "+affectedOrder.getStock()+" at "+Tradetype);
-				//update order object
-				affectedOrder.setStatus(status);
-				affectedOrder.setType(type);
-				affectedOrder.getTrades().add(newTrade);
-			
-				System.out.println("!!!!!!!DEBUG MSG!!!!!!!!  Update the order status to " + status+" with trade type "+Tradetype);
-				em.persist(newTrade);
-				
-				double PL_percentage = calculator.calPercentageChange(calculator.calculateCurrentValue(affectedOrder), affectedOrder.getTotal_amount());
-				//TODO
-				sendTCResponse(PL_percentage, affectedBoll.numOfSharesTraded,affectedBoll.getStockSymbol());
-				
-			}
+					// create trade object
+					String Tradetype = (type.equals(OrderType.LONG) ? "buy"
+							: "sell");
+					StockList stock = stockListController
+							.getStockListByName(affectedOrder.getStock());
+					Trade newTrade = calculator.createTrade(Tradetype,
+							affectedOrder.getalgo_id(),
+							affectedBoll.getEnterPrice(),
+							affectedBoll.getNumOfShares(),
+							affectedOrder.getTrader_id(), stock);
 
-		}
-		// TODO persist trade to db
+					System.out
+							.println("!!!!!!!DEBUG MSG!!!!!!!!  Created an new trade with symbol "
+									+ affectedOrder.getStock()
+									+ " at "
+									+ Tradetype);
+					// update order object
+
+					affectedOrder.setStatus(status);
+					affectedOrder.setType(type);
+					affectedOrder.getTrades().add(newTrade);
+					System.out
+							.println("!!!!!!!DEBUG MSG!!!!!!!!  Update the order status to "
+									+ status + " with trade type " + Tradetype);
+					// em.persist(newTrade);
+					// em.persist(affectedOrder);
+					em.merge(affectedOrder);
+				} else {// exit statuts
+					EnteredOrders.remove(index);
+					enteredstockList.remove(index);
+					affectedBoll.setPending(false);
+					// create trade object
+					String Tradetype = (type.equals(OrderType.LONG) ? "sell"
+							: "buy");
+					StockList stock = stockListController
+							.getStockListByName(affectedOrder.getStock());
+					Trade newTrade = calculator.createTrade(Tradetype,
+							affectedOrder.getalgo_id(),
+							affectedBoll.getEnterPrice(),
+							affectedBoll.getNumOfShares(),
+							affectedOrder.getTrader_id(), stock);
+
+					System.out
+							.println("!!!!!!!DEBUG MSG!!!!!!!!  Created an new trade with symbol "
+									+ affectedOrder.getStock()
+									+ " at "
+									+ Tradetype);
+					// update order object
+					affectedOrder.setStatus(status);
+					affectedOrder.setType(type);
+					affectedOrder.getTrades().add(newTrade);
+
+					System.out
+							.println("!!!!!!!DEBUG MSG!!!!!!!!  Update the order status to "
+									+ status + " with trade type " + Tradetype);
+					// em.persist(newTrade);
+					// em.persist(affectedOrder);
+					em.merge(affectedOrder);
+
+					double PL_percentage = calculator.calPercentageChange(
+							calculator.calculateCurrentValue(affectedOrder),
+							affectedOrder.getTotal_amount());
+					// TODO
+					sendTCResponse(PL_percentage,
+							affectedBoll.numOfSharesTraded,
+							affectedBoll.getStockSymbol());
+
+				}
+
+		}// result is fill
+			// StartMonitoring();
 	}
 
-	private void sendTCResponse(double pL_percentage, int numOfSharesTraded, String symbol) {
+	private void sendTCResponse(double pL_percentage, int numOfSharesTraded,
+			String symbol) {
 		// TODO Auto-generated method stub
 		TC_ATObject obj = new TC_ATObject();
 		obj.setAlgo("Bollinger Bands");
 		obj.setAmtToTrade(numOfSharesTraded);
-		if(pL_percentage>0) {
+		if (pL_percentage > 0) {
 			obj.setLoss(0);
 			obj.setProfit(pL_percentage);
-		}
-		else {
+		} else {
 			obj.setProfit(0);
 			obj.setLoss(pL_percentage);
 		}
 		obj.setSymbol(symbol);
-		
+
 		sendResponseMessage(obj);
 	}
 
-	public void RecordOrder(String symbol,OrderType type, double total, OrderStatus status,
-			double lossPer, double proPer) {
+	public void RecordOrder(String symbol, OrderType type, double total,
+			OrderStatus status, double lossPer, double proPer) {
 		Order newO = new Order();
 		newO.setStock(symbol);
 		newO.setLossPercentage(lossPer);
@@ -395,16 +479,17 @@ public class AutomatedTradingController {
 		newO.setType(type);
 		newO.setTrades(new ArrayList<Trade>());
 		newO.setalgo_id(1);
-		//TODO hard coded, need to add one file
+		// TODO hard coded, need to add one file
 		newO.setTrader_id(1);
 		em.persist(newO);
 		beforeEnterOrders.add(newO);// add to the list
-		System.out.println("[DEBUG MSG(add beforeenterorder list):       ]"+beforeEnterOrders.size());
+		System.out.println("[DEBUG MSG(add beforeenterorder list):       ]"
+				+ beforeEnterOrders.size());
 	}
 
 	public void StartMonitoring() {
 		monitorPriceToEnter();
-//		monitorPriceToExit();
+		monitorPriceToExit();
 	}
 
 	private void sendTradeMessage(TradeStructureForLogging trade) {
@@ -427,14 +512,15 @@ public class AutomatedTradingController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void sendResponseMessage(TC_ATObject trade) {
 		try {
 			tradeControllerMessageQueueConnection = (QueueConnection) tradeControllerMessageFactory
 					.createConnection();
 			QueueSession session = tradeControllerMessageQueueConnection
 					.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-			QueueSender sender = session.createSender(tradeControllerMessageQueue);
+			QueueSender sender = session
+					.createSender(tradeControllerMessageQueue);
 			TextMessage textMsg = session.createTextMessage();
 			String text = TradingController.tradeToXML(trade);
 			textMsg.setText(text);
@@ -444,7 +530,7 @@ public class AutomatedTradingController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * Check enter condition for every one minute for every order with the
 	 * 'BEFORE ENTER' status if the condition hit, 1. send message to order
@@ -453,6 +539,7 @@ public class AutomatedTradingController {
 	public void monitorPriceToEnter() {
 		Timer timer = new Timer();
 		// Schedule to run after every 1 minuts(3000 millisecond)
+<<<<<<< HEAD
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -509,6 +596,98 @@ public class AutomatedTradingController {
 				System.out.println("[AUTO ALGO-monitor exit]");
 			}
 		},0, MONITOR_TIME_INTERVAL);
+=======
+		timer.schedule(new TimerTaskCheckEnter() /*
+												 * {
+												 * 
+												 * @Override public void run() {
+												 * System.out.println(
+												 * "[AUTO ALGO-monitor exit] size: "
+												 * +
+												 * beforeEnterOrders.size()+' '+
+												 * beforeStockList.size() );
+												 * ArrayList<Integer>
+												 * pendingList = new
+												 * ArrayList<Integer>(); for
+												 * (int i = 0; i <
+												 * beforeStockList.size(); i++)
+												 * { bollingerStockWrapper trade
+												 * = beforeStockList.get(i);
+												 * Order order =
+												 * beforeEnterOrders.get(i);
+												 * System.out.println(
+												 * "[AUTO ALGO-monitor enter] (loop beforeenterorder symbol):       ]"
+												 * +order.getStock()); Stock
+												 * newInfo = marketDataHandler.
+												 * getStockBySymbol(trade
+												 * .getStockSymbol()); if
+												 * ((!pendingList.contains(i))
+												 * &&
+												 * trade.isShortEnter(newInfo))
+												 * { // enter short // TODO SEND
+												 * MESSAGE, IF SUCESS
+												 * TradeObject tradeToMake = new
+												 * TradeObject();
+												 * tradeToMake.setBuy(false);
+												 * tradeToMake
+												 * .setId(nextTradeId++);//
+												 * check this. Why is
+												 * tradeToMake
+												 * .setPrice(newInfo.getAsk());
+												 * tradeToMake
+												 * .setStock(trade.getStockSymbol
+												 * ()); tradeToMake.setToNow();
+												 * tradeToMake.setSize((int)
+												 * trade.numOfSharesTraded);
+												 * 
+												 * sendTradeMessage(new
+												 * TradeStructureForLogging(
+												 * tradeToMake,
+												 * OrderStatus.ENTERED,
+												 * OrderType.SHORT, i));
+												 * System.out.println(
+												 * "[AUTO ALGO-monitor enter sort- sent msg]"
+												 * ); // update order
+												 * 
+												 * //
+												 * trade.updateEnterInfo(OrderType
+												 * .SHORT, // newInfo.getAsk());
+												 * pendingList.add(i);
+												 * 
+												 * } else if (
+												 * (!pendingList.contains(i))
+												 * &&trade.isLongEnter(newInfo))
+												 * { // enter long // TODO SEND
+												 * MESSAGE, IF SUCESS
+												 * TradeObject tradeToMake = new
+												 * TradeObject();
+												 * tradeToMake.setBuy(true);
+												 * tradeToMake
+												 * .setId(nextTradeId++);
+												 * tradeToMake
+												 * .setPrice(newInfo.getBid());
+												 * tradeToMake
+												 * .setStock(trade.getStockSymbol
+												 * ()); tradeToMake.setToNow();
+												 * tradeToMake.setSize((int)
+												 * trade.numOfSharesTraded);
+												 * sendTradeMessage(new
+												 * TradeStructureForLogging(
+												 * tradeToMake,
+												 * OrderStatus.ENTERED,
+												 * OrderType.LONG, i));
+												 * System.out.println(
+												 * "[AUTO ALGO-monitor enter long- sent msg]"
+												 * ); //
+												 * trade.updateEnterInfo(OrderType
+												 * .LONG, // newInfo.getBid());
+												 * pendingList.add(i);
+												 * 
+												 * }
+												 * 
+												 * } } }
+												 */, 0, MONITOR_TIME_INTERVAL);
+>>>>>>> 10f40dd4b75345735247cb84ec7df56d9034b5de
 	}
 
 	/*
@@ -516,14 +695,14 @@ public class AutomatedTradingController {
 	 * entered status if the condition hit, 1. send message to order broker, 2.
 	 * recorder trade, 3. change order status
 	 */
-	
-	
+
 	public void monitorPriceToExit() {
 		// will there be any data lost???????????????
 		// numOfSharesTraded = (long) (totalAmount / enterPrice);
 
 		Timer timer = new Timer();
 		// Schedule to run after every 1 minute
+<<<<<<< HEAD
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -555,6 +734,63 @@ public class AutomatedTradingController {
 
 			}
 		}, 0,MONITOR_TIME_INTERVAL);
+=======
+		timer.schedule(new TimerTaskCheckExit() /*
+												 * {
+												 * 
+												 * @Override public void run() {
+												 * ArrayList<Integer>
+												 * pendingList = new
+												 * ArrayList<Integer>();
+												 * 
+												 * System.out.println(
+												 * "[AUTO ALGO-monitor exit] size: "
+												 * + EnteredOrders.size() + ' '
+												 * + enteredstockList.size());
+												 * for (int i = 0; i <
+												 * enteredstockList.size(); i++)
+												 * { bollingerStockWrapper trade
+												 * = enteredstockList.get(i);
+												 * Order order =
+												 * EnteredOrders.get(i); Stock
+												 * newInfo = marketDataHandler.
+												 * getStockBySymbol(trade
+												 * .getStockSymbol());
+												 * 
+												 * // SHORT EXIT // SHORT EXIT
+												 * if
+												 * ((!pendingList.contains(i))
+												 * && trade.isExit(newInfo)) {
+												 * System
+												 * .out.println("[AUTO ALGO EXIT] "
+												 * ); TradeObject tradeToMake =
+												 * new TradeObject();
+												 * tradeToMake
+												 * .setBuy(trade.getShortOrLong
+												 * () == OrderType.SHORT);
+												 * tradeToMake
+												 * .setId(nextTradeId++);//
+												 * check this. Why is
+												 * tradeToMake
+												 * .setPrice(trade.getExitPrice
+												 * ());
+												 * tradeToMake.setStock(trade
+												 * .getStockSymbol());
+												 * tradeToMake.setToNow();
+												 * tradeToMake.setSize((int)
+												 * trade.numOfSharesTraded);
+												 * TradeStructureForLogging tsfl
+												 * = new
+												 * TradeStructureForLogging(
+												 * tradeToMake,
+												 * OrderStatus.EXIT, trade
+												 * .getShortOrLong(), i);
+												 * sendTradeMessage(tsfl);
+												 * pendingList.add(i); } }
+												 * 
+												 * } }
+												 */, 0, MONITOR_TIME_INTERVAL);
+>>>>>>> 10f40dd4b75345735247cb84ec7df56d9034b5de
 	}
 
 	public boolean isMonitoring() {
@@ -565,11 +801,111 @@ public class AutomatedTradingController {
 		this.isMonitoring = isMonitoring;
 	}
 
-	/*
-	 * public ArrayList<bollingerStockWrapper> getStockList() { return
-	 * stockList; }
-	 * 
-	 * public void setStockList(ArrayList<bollingerStockWrapper> stockList) {
-	 * this.stockList = stockList; }
-	 */
+	class TimerTaskCheckExit extends TimerTask {
+		@Override
+		public void run() {
+			ArrayList<Integer> pendingList = new ArrayList<Integer>();
+
+			System.out.println("[AUTO ALGO-monitor exit] size: "
+					+ EnteredOrders.size() + ' ' + enteredstockList.size());
+			for (int i = 0; i < enteredstockList.size(); i++) {
+				bollingerStockWrapper trade = enteredstockList.get(i);
+				Order order = EnteredOrders.get(i);
+				Stock newInfo = marketDataHandler.getStockBySymbol(trade
+						.getStockSymbol());
+				System.out.println("[AUTO ALGO-monitor exit] symbol: "
+						+ order.getStock() + ' ' + "Pending: "
+						+ trade.isPending);
+
+				// SHORT EXIT
+				// SHORT EXIT
+				if ((!trade.getIsPending()) && trade.isExit(newInfo)) {
+					System.out.println("[AUTO ALGO EXIT] ");
+					TradeObject tradeToMake = new TradeObject();
+					tradeToMake
+							.setBuy(trade.getShortOrLong() == OrderType.SHORT);
+					tradeToMake.setId(nextTradeId++);// check this. Why is
+					tradeToMake.setPrice(trade.getExitPrice());
+					tradeToMake.setStock(trade.getStockSymbol());
+					tradeToMake.setToNow();
+					tradeToMake.setSize((int) trade.numOfSharesTraded);
+					TradeStructureForLogging tsfl = new TradeStructureForLogging(
+							tradeToMake, OrderStatus.EXIT,
+							trade.getShortOrLong(), i);
+					sendTradeMessage(tsfl);
+					trade.setPending(true);
+				}
+			}
+
+		}
+
+	}
+
+	class TimerTaskCheckEnter extends TimerTask {
+
+		public TimerTaskCheckEnter() {
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void run() {
+			System.out.println("[AUTO ALGO-monitor enter] size: "
+					+ beforeEnterOrders.size() + ' ' + beforeStockList.size());
+			ArrayList<Integer> pendingList = new ArrayList<Integer>();
+			for (int i = 0; i < beforeStockList.size(); i++) {
+				bollingerStockWrapper trade = beforeStockList.get(i);
+				Order order = beforeEnterOrders.get(i);
+				System.out
+						.println("[AUTO ALGO-monitor enter] (loop  symbol):       ]"
+								+ order.getStock()
+								+ "Pending: "
+								+ trade.isPending);
+				Stock newInfo = marketDataHandler.getStockBySymbol(trade
+						.getStockSymbol());
+				if ((!trade.getIsPending()) && trade.isShortEnter(newInfo)) {
+					// enter short
+					// TODO SEND MESSAGE, IF SUCESS
+					TradeObject tradeToMake = new TradeObject();
+					tradeToMake.setBuy(false);
+					tradeToMake.setId(nextTradeId++);// check this. Why is
+					tradeToMake.setPrice(newInfo.getAsk());
+					tradeToMake.setStock(trade.getStockSymbol());
+					tradeToMake.setToNow();
+					tradeToMake.setSize((int) trade.numOfSharesTraded);
+
+					sendTradeMessage(new TradeStructureForLogging(tradeToMake,
+							OrderStatus.ENTERED, OrderType.SHORT, i));
+					System.out
+							.println("[AUTO ALGO-monitor enter sort- sent msg]");
+					// update order
+
+					// trade.updateEnterInfo(OrderType.SHORT,
+					// newInfo.getAsk());
+					trade.setPending(true);
+
+				} else if ((!trade.getIsPending())
+						&& trade.isLongEnter(newInfo)) {
+					// enter long
+					// TODO SEND MESSAGE, IF SUCESS
+					TradeObject tradeToMake = new TradeObject();
+					tradeToMake.setBuy(true);
+					tradeToMake.setId(nextTradeId++);
+					tradeToMake.setPrice(newInfo.getBid());
+					tradeToMake.setStock(trade.getStockSymbol());
+					tradeToMake.setToNow();
+					tradeToMake.setSize((int) trade.numOfSharesTraded);
+					sendTradeMessage(new TradeStructureForLogging(tradeToMake,
+							OrderStatus.ENTERED, OrderType.LONG, i));
+					System.out
+							.println("[AUTO ALGO-monitor enter long- sent msg]");
+					// trade.updateEnterInfo(OrderType.LONG,
+					// newInfo.getBid());
+					trade.setPending(true);
+
+				}
+
+			}
+		}
+	}
+
 }

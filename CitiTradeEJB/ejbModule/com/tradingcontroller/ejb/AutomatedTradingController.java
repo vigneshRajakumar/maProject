@@ -220,7 +220,7 @@ public class AutomatedTradingController {
 					exitPrice = ask;
 					System.out
 							.println(String
-									.format("[AUTO ALGO- exit] stock: %s,    percentage P/L: %f,   type: %s,   buy price: %d",
+									.format("[AUTO ALGO- exit] stock: %s,    percentage P/L: %f,   type: %s,   buy price: %s",
 											stockSymbol, percentagePL, "short",
 											ask));
 					return true;
@@ -236,7 +236,7 @@ public class AutomatedTradingController {
 					exitPrice = bid;
 					System.out
 							.println(String
-									.format("[AUTO ALGO- exit] stock: %s,    percentage P/L: %f,   type: %s,   sell price: %d",
+									.format("[AUTO ALGO- exit] stock: %s,    percentage P/L: %f,   type: %s,   sell price: %f",
 											stockSymbol, percentagePL, "long",
 											ask));
 					return true;

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+<!-- jQuery -->
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/cookie.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	var $_GET = {};
+	document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+		function decode(s) {
+		    return decodeURIComponent(s).replace(/\+/g, " ");
+		}
+		$_GET[decode(arguments[1])] = decode(arguments[2]);
+	});
+	
+	var username = $_GET.username;
+	var userid = $_GET.userid;
+	var test = $_GET.test;
+	
+	var date = new Date();
+	var minutes = 5;
+	date.setTime(date.getTime() + (minutes * 60 * 1000));
+	
+	if (username != null) {
+		Cookies.set("username", username, { expires: date });
+		Cookies.set("userid", userid, { expires: date });
+		window.location.href = "main.html";
+	} else {
+		window.location.href = "index.html";
+	}
+	/* $.ajax({
+	  url: "rest/rest/,
+	  beforeSend: function(xhr) {
+	    xhr.setRequestHeader("custom_header", "value");
+	  },
+	  success: function(data) {
+	  }
+	}); */
+});
+</script>
+</body>
+
+</html>

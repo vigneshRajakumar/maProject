@@ -99,6 +99,7 @@ public class AutomatedTradingController {
 	private final static String SHORT = "SHORT";
 	private final static String LONG = "LONG";
 	private final static int TIME_PERIOD = -20;
+
 	private final static int MONITOR_TIME_INTERVAL = 5000;// monitor the
 															// data
 

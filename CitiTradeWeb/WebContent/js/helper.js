@@ -1,14 +1,49 @@
 $(document).ready(function() {
-
-	/*var url = window.location.href;
+	var url = window.location.href;
+	var username = Cookies.get("username");
 	if (url.indexOf("index.html") >= 0) {
-		checkUserOnload();
+		if (username != null) {
+			 window.location.href = "main.html";
+		}
 	} else {
-		checkUserStatus();
-	}*/
+		if (username == null) {
+			 window.location.href = "index.html";
+<<<<<<< HEAD
+		} /*else {
+			var timer = setTimeout(function() {
+				getMessage();
+			  }, 10000);
+		}*/
+=======
+		}
+>>>>>>> 8fef9d0bc76fc18667841a864030b95fe55e2ac6
+	}
+	
+	$("#userProfileButton").on("click", function () {
+        $("#formSubmitButton").hide();
+        getUserProfile();
+    });
 
     $("#userSettingsButton").on("click", function () {
         $("#userSettingsTabs li:nth-child(2) a").click();
+        $("#formSubmitButton").hide();
+        getUserProfile();
+    });
+    
+    /*$("input[type=number]").on("keydown", function (event) {
+    	return event.keyCode >= 48 && event.keyCode <= 57;
+    });*/
+    $("#formSubmitButton").on("click", function () {
+        $("#userSubmit").click();
+    });
+
+    $('#userProfileForm').on('keyup change', 'input, select, textarea', function(){
+        $("#formSubmitButton").show();
+    });
+
+    $(".numbersOnly").on('keyup', function () { 
+        var v = $(this).val().replace(/[^0-9\.]/g,'');
+        $(this).val(v);
     });
 });
 
@@ -59,6 +94,38 @@ function toggleLogin () {
   }
 }
 
+//Display user profile in the modal
+function getUserProfile () {
+	$.ajax({
+	      type: "GET",
+	      url: "rest/rest/userinfo",
+	      success: function (data) {
+	    	  $("#userName").val(data.uname);
+	    	  $("#userFirstName").val(data.firstname);
+	    	  $("#userLastName").val(data.lastname);
+	    	  $("#userEmail").val(data.email);
+	    	  $("#userBalance").val(data.balance);
+	    	  $("#profitLost").val(data.profit_Lost);
+	      }
+	});
+}
+
+<<<<<<< HEAD
+function getMessage () {
+	$.ajax({
+	      type: "GET",
+	      url: "rest/rest/message",	      
+	      success: function (data) {
+	    	  $(".dropdown-menu.dropdown-alerts").append(
+	    			  "<li class='divider'></li><li><div><i class='fa fa-envelope fa-fw'></i>" +
+	    			  data +
+	    			  "</div></li>");
+	      }
+	});
+}
+
+=======
+>>>>>>> 8fef9d0bc76fc18667841a864030b95fe55e2ac6
 //Actions with registration form
 $(function () {
     $('.button-checkbox').each(function () {
@@ -131,38 +198,6 @@ $(function () {
 });
 
 $("#logout").on("click", function () {
-	$.ajax({
-		type: "GET",
-	    url: "rest/rest/logout",
-	    success: function () {
-		  window.location.href = "index.html";
-	  }
-	});
+	Cookies.remove("username");
+	window.location.href = "index.html";
 });
-
-
-function checkUserStatus () {
-	$.ajax({
-		  type: "GET",
-		  url: "rest/rest/verification",
-		  success: function (data) {
-			  console.log("checkUserStatus: " + data);
-			  if (data == "false") {
-				  window.location.href = "index.html";
-			  }
-		  }
-	});
-}
-
-function checkUserOnload () {
-	$.ajax({
-	      type: "GET",
-	      url: "rest/rest/verification",
-	      success: function (data) {
-	    	  console.log("checkUserOnload: " + data);
-	    	  if(data == "true") {
-	    		  window.location.href = "main.html";
-	    	  }
-	      }
-	});
-}

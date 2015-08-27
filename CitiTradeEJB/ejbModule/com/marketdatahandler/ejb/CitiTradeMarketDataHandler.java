@@ -39,7 +39,7 @@ public class CitiTradeMarketDataHandler implements MarketDataHandlerRemote, Mark
 	public Stock getStockBySymbol(String symbol) {
 		Stock result = null;
 		StockInfoHelper helper = new StockInfoHelper();
-		
+		 
 		TypedQuery<Stock> query = em.createQuery("SELECT s FROM Stock AS s where s.symbol = :sym",Stock.class);
 		query.setParameter("sym", symbol);
 		try{

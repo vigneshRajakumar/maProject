@@ -9,6 +9,10 @@ $(document).ready(function() {
   getHistory();
   getTopNews();
   getPortfolio();
+  
+  var timer = setTimeout(function() {
+	getMessage();
+  }, 2000);
 
   var mouseX;
   var mouseY;
@@ -57,11 +61,21 @@ $(document).ready(function() {
 
   $(".trade_button").on("click", function (event) {
     var stock = $("#stock").val();
-    var result = $.grep(stockList, function(e){ return e.value == id; });
+    var result = $.grep(stockList, function(e){ return e.value == stock; });
 
     if(result.length == 0) {
       event.preventDefault();
     }
+  });
+
+  $("#refreshHistory").on("click", function () {
+    historyTable.destroy();
+    getHistory();
+  });
+
+  $("#refreshPortfolio").on("click", function () {
+    portfolioTable.destroy();
+    getPortfolio();
   });
 });
 
@@ -237,4 +251,17 @@ function getTopNews () {
         $("#company2").attr("href", "http://finance.yahoo.com/q?s=%5EFTSE");
       }
   });
+}
+
+function getMessage () {
+	$.ajax({
+	      type: "GET",
+	      url: "rest/rest/message",	      
+	      success: function (data) {
+	    	  $(".dropdown-menu.dropdown-alerts").append(
+	    			  "<li class='divider'></li><li><div><i class='fa fa-envelope fa-fw'></i>" +
+	    			  data +
+	    			  "</div></li>");
+	      }
+	});
 }

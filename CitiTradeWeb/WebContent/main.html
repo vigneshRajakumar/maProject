@@ -11,6 +11,8 @@
 
     <title>CitiTrade - Dashboard</title>
 
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     
@@ -52,14 +54,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="main.html">CitiTrade</a>
+                <a class="navbar-brand topnav" href="#" title="CitiTrade">
+                    <img style="max-width:100px; margin-top: -7px;" src="css/img/logo.png">
+                </a>
             </div>
             <!-- /.navbar-header -->
 
             <div id="navbar" class="navbar-inverse navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li role="presentation" class="active"><a href="#">Dashboard</a></li>
-                    <li role="presentation"><a href="history.html">History</a></li>
                     <li role="presentation"><a href="trade.html">Trade</a></li>
                     <li role="presentation"><a href="help.html">Help</a></li>
                 </ul>
@@ -71,30 +74,6 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                        <span class="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i class="fa fa-tasks fa-fw"></i> New Task
-                                        <span class="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a class="text-center" href="#">
-                                    <strong>See All Alerts</strong>
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </li>
                         </ul>
                         <!-- /.dropdown-alerts -->
                     </li>
@@ -145,23 +124,17 @@
         <!-- /.panel-default -->
 
         <div id="page-wrapper">
-            <div class="top_news"><!-- 
-                Aug 21, 2015
-                CAC 40  4630.99
-                <span class="up">-152.56 ▼ ▲-3.19%</span>
-                NIKKEI 225  19435.83
-                <span class="up">-597.69 ▼-2.98%</span>
-                FTSE100  6187.65
-                <span class="up">-180.24 ▼-2.83%</span> -->
-            </div>    
-            <!-- /.extremes -->
+            <div class="top_news"></div>
 
             <div class="row right_top">
 
                 <div class="col-lg-8 col-md-8">
                     <div class="col-lg-12">
-                        <div class="panel panel-ct">
-                            <div class="panel-heading">Your Trading History</div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                Your Trading History
+                                <div class="refresh" id="refreshHistory"><i class="fa fa-refresh fa-lg"></i></div>
+                            </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -188,8 +161,11 @@
                     <!-- /.col-lg-12 -->
 
                     <div class="col-lg-12 col-md-12 right_bottom">
-                        <div class="panel panel-ct">
-                            <div class="panel-heading">Your Portfolio</div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                Your Portfolio
+                                <div class="refresh" id="refreshPortfolio"><i class="fa fa-refresh fa-lg"></i></div>
+                            </div>
                             <!-- /.panel-heading -->
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -223,29 +199,29 @@
                             Trade Now !
                         </div>
                         <div class="panel-body">
-                            <form class="form-horizontal" role="form" action="rest/rest/trade">
+                            <form class="form-horizontal" role="form" method="post" action="rest/rest/trade">
                                 <div class="form-group">
                                     <label class="control-label col-sm-3" for="stock">Stock:</label>
                                     <div class="col-sm-9">
-                                      <input type="text" class="form-control" id="stock" placeholder="Enter symbol">
+                                      <input type="text" class="form-control" id="stock" name="stock" placeholder="Enter symbol">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-3" for="amount">Amount:</label>
                                     <div class="col-sm-9">
-                                      <input type="number" min="1" class="form-control numbersOnly" id="amount" placeholder="Enter $ to trade">
+                                      <input type="number" min="1" class="form-control numbersOnly" id="amount" name="amount" placeholder="Enter $ to trade">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-5" for=""percentProfit"">Max % Profit:</label>
                                     <div class="col-sm-7"> 
-                                      <input type="number" min="1" class="form-control numbersOnly" id="percentProfit" placeholder="%">
+                                      <input type="number" min="1" class="form-control numbersOnly" id="percentProfit" name="percentProfit" placeholder="%">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-sm-5" for=""percentLoss"">Max % Loss:</label>
                                     <div class="col-sm-7"> 
-                                      <input type="number" min="1" class="form-control numbersOnly" id="percentLoss" placeholder="%">
+                                      <input type="number" min="1" class="form-control numbersOnly" id="percentLoss" name="percentLoss" placeholder="%">
                                     </div>
                                 </div>
                                 <div class="form-group">

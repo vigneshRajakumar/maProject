@@ -7,9 +7,35 @@ import com.tradingcontroller.TC_ATObject;
 
 public class TMAObjClass {
 	
+	int id ;
+	private boolean isShort = false;
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public boolean isSend() {
+		return isSend;
+	}
+
+	public void setSend(boolean isSend) {
+		this.isSend = isSend;
+	}
+
+	public void setNumOfTrade(int numOfTrade) {
+		this.numOfTrade = numOfTrade;
+	}
+
+	boolean isSend = false;
+	
 	String stockSymbol = "";
 	int longCounter = 0;
-	int shortCounter = 0;
+	int shortCounter = 0;;
+	
 	double shortAvg = 0;
 	double longAvg = 0;
 
@@ -19,7 +45,19 @@ public class TMAObjClass {
 	TC_ATObject obj = null;
 
 	double buyPrice = 0;
+		
+	public int getNumOfTrade() {
+		return numOfTrade;
+	}
+
+	public void setNumOfTrade(double numOfTrade) {
+		
+		this.numOfTrade = (int)numOfTrade;
+	}
+
 	double sellPrice = 0;
+	
+	int numOfTrade = 0;
 	
 	public TMAObjClass(TC_ATObject obj){
 		
@@ -171,6 +209,14 @@ public class TMAObjClass {
 
 		this.shortCounter = adjCloseArray.size();
 		shortAvg = avg;
+	}
+
+	public boolean isShort() {
+		return isShort;
+	}
+
+	public void setShort(boolean isShort) {
+		this.isShort = isShort;
 	}
 
 	

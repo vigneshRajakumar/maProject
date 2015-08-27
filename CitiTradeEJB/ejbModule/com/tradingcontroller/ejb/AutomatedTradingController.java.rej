@@ -1,0 +1,19 @@
+diff a/CitiTradeEJB/ejbModule/com/tradingcontroller/ejb/AutomatedTradingController.java b/CitiTradeEJB/ejbModule/com/tradingcontroller/ejb/AutomatedTradingController.java	(rejected hunks)
+@@ -101,10 +101,17 @@
+  	private final static String SHORT = "SHORT";
+  	private final static String LONG = "LONG";
+  	private final static int TIME_PERIOD = -20;
+++<<<<<<< HEAD
+ +	private final static int MONITOR_TIME_INTERVAL = 1000;// monitor the data
+ +															// every one minute
+ +	
+ +
+++=======
++ 
++ 	private final static int MONITOR_TIME_INTERVAL = 5000;// monitor the data
++ 															// every one minute
++ 	
+++>>>>>>> 94cfc70f1eb1cd140fc51564a45773cc1e908d8a
+  	private class bollingerStockWrapper {
+  		private String stockSymbol;
+  		private int numOfSharesTraded;

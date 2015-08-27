@@ -42,7 +42,8 @@ public class TestAlgorithmTwoMovingAverages extends HttpServlet {
 		TC_ATObject obj2 = new TC_ATObject("BBBB", 33000, 55000 , 0, "Bollinger Bands");
 
 		twoMovingAvgController.run(obj2);
-		
+
+
 
 		
 	}

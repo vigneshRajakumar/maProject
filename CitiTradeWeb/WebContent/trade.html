@@ -11,11 +11,20 @@
 
     <title>CitiTrade - Trade</title>
 
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- JQuery UI CSS -->
+    <link href="css/jquery-ui.css" rel="stylesheet">
+
+    <!-- AmChart CSS -->
+    <link rel="stylesheet" href="js/amcharts/style.css" type="text/css">
 
     <!-- Custom CSS -->
     <link href="css/helper.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -42,14 +51,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="main.html">CitiTrade</a>
+                <a class="navbar-brand topnav" href="#" title="CitiTrade">
+                    <img style="max-width:100px; margin-top: -7px;" src="css/img/logo.png">
+                </a>
             </div>
             <!-- /.navbar-header -->
 
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li role="presentation"><a href="main.html">Dashboard</a></li>
-                    <li role="presentation"><a href="history.html">History</a></li>
                     <li role="presentation" class="active"><a href="#">Trade</a></li>
                     <li role="presentation"><a href="help.html">Help</a></li>
                 </ul>
@@ -61,30 +71,6 @@
                             <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-alerts">
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                        <span class="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <i class="fa fa-tasks fa-fw"></i> New Task
-                                        <span class="pull-right text-muted small">4 minutes ago</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a class="text-center" href="#">
-                                    <strong>See All Alerts</strong>
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </li>
                         </ul>
                         <!-- /.dropdown-alerts -->
                     </li>
@@ -110,7 +96,90 @@
             </div>
         </nav>
 
-        <div id="page-wrapper">
+        <div id="page-wrapper" class="tradeWrapper">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="panel panel-red tradePanel">
+                        <div class="panel-heading">
+                            Trade Now !
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" method="post" action="rest/rest/trade">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="stock">Stock:</label>
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control" id="stock" name="stock" placeholder="Enter symbol">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="amount">Amount:</label>
+                                    <div class="col-sm-9">
+                                      <input type="number" min="1" class="form-control numbersOnly" id="amount" name="amount" placeholder="Enter $ to trade">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5" for=""percentProfit"">Max % Profit:</label>
+                                    <div class="col-sm-7"> 
+                                      <input type="number" min="1" class="form-control numbersOnly" id="percentProfit" name="percentProfit" placeholder="%">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5" for=""percentLoss"">Max % Loss:</label>
+                                    <div class="col-sm-7"> 
+                                      <input type="number" min="1" class="form-control numbersOnly" id="percentLoss" name="percentLoss" placeholder="%">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3" for="method">Method:</label>
+                                    <div class="col-sm-9">
+                                        <div class="radio">
+                                            <label><input type="radio" name="method" value="TM">Two Moving Averages</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" name="method" value="BB">Bollinger Bands</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" name="method" value="PB">Price Breakout</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group"> 
+                                    <div class="col-sm-offset-5 col-sm-3">
+                                        <button type="submit" class="btn btn-danger btn-circle btn-lg trade_button">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-4 -->
+
+                <div class="col-lg-8 col-md-8">
+                    <div class="panel panel-ls tradePanel">
+                        <div class="panel-heading">
+                            Details
+                        </div>
+                        <div class="panel-body" id="tradeDetailsBody">
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-8 -->
+
+                <div class="col-lg-12 col-md-12">
+                    <div class="panel panel-ls">
+                        <div class="panel-body tradeBody">
+                            <div id="chartContainer">
+                                <div id="chartdiv" style="width:94%; height:400px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            
         </div>
         <!-- /#page-wrapper -->
 
@@ -199,9 +268,23 @@
 
     <!-- jQuery -->
     <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+
+    <!-- AmChart JavaScript -->
+    <script src="js/amcharts/amcharts.js" type="text/javascript"></script>
+    <script src="js/amcharts/serial.js" type="text/javascript"></script>
+    <script src="js/amcharts/amstock.js" type="text/javascript"></script>
+
+    <!-- theme files. you only need to include the theme you use.
+         feel free to modify themes and create your own themes -->
+    <script src="js/amcharts/themes/light.js" type="text/javascript"></script>
+    <script src="js/amcharts/themes/dark.js" type="text/javascript"></script>
+    <script src="js/amcharts/themes/black.js" type="text/javascript"></script>
+    <script src="js/amcharts/themes/chalk.js" type="text/javascript"></script>
+    <script src="js/amcharts/themes/patterns.js" type="text/javascript"></script>
     
     <!-- Cookie JavaScript -->
     <script src="js/cookie.js"></script>

@@ -8,15 +8,7 @@ $(document).ready(function() {
 	} else {
 		if (username == null) {
 			 window.location.href = "index.html";
-<<<<<<< HEAD
-		} /*else {
-			var timer = setTimeout(function() {
-				getMessage();
-			  }, 10000);
-		}*/
-=======
 		}
->>>>>>> 8fef9d0bc76fc18667841a864030b95fe55e2ac6
 	}
 	
 	$("#userProfileButton").on("click", function () {
@@ -110,22 +102,6 @@ function getUserProfile () {
 	});
 }
 
-<<<<<<< HEAD
-function getMessage () {
-	$.ajax({
-	      type: "GET",
-	      url: "rest/rest/message",	      
-	      success: function (data) {
-	    	  $(".dropdown-menu.dropdown-alerts").append(
-	    			  "<li class='divider'></li><li><div><i class='fa fa-envelope fa-fw'></i>" +
-	    			  data +
-	    			  "</div></li>");
-	      }
-	});
-}
-
-=======
->>>>>>> 8fef9d0bc76fc18667841a864030b95fe55e2ac6
 //Actions with registration form
 $(function () {
     $('.button-checkbox').each(function () {

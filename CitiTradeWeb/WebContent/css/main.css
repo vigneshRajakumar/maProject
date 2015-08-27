@@ -1,11 +1,11 @@
 .panel-ct {
-  border-color: #399CA9;
+  border-color: #3A539B;
 }
 
 .panel-ct>.panel-heading {
-  color: #1C4E54;
-  background-color: #7ED5E0;
-  border-color: #399CA9;
+  color: white;
+  background-color: #4B77BE;
+  border-color: #3A539B;
 }
 
 .panel-ls {
@@ -19,20 +19,45 @@
   border-radius: 0;
 }
 
+.panel-ls>.panel-body.tradeBody {
+  background-color: #282828;
+}
+
 .panel-float {
   border-color: #222222;
 }
 
+.right_top .panel-primary>.panel-heading,
+.panel-ls.tradePanel>.panel-heading,
 .panel-ct>.panel-heading,
-.panel-red>.panel-heading {
+.panel-red>.panel-heading,
+.panel-yellow>.panel-heading {
 	font-size: 20px;
 	font-weight: 700;
+}
+
+.tradePanel>.panel-body {
+  height: 56vh;
+  min-height: 360px;
 }
 
 #stockGraph {
   z-index: 1000;
   position: absolute;
   display: none;
+}
+
+.refresh {
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  float: right;
+  color: #5393C8;
+  z-index: 100;
+}
+
+.refresh:hover {
+  color: #BED8EE;
 }
 
 /***************
@@ -64,6 +89,22 @@
 #stocks_filter input {
   width: 140px;
 }
+
+.details_left {
+  text-align: right;
+}
+
+.details_right {
+  text-align: left;
+}
+
+.details_left,
+.details_right {
+  font-size: 14px;
+  padding: 5px 10px;
+  margin: 5px 0;
+}
+
 
 /***************
    Right Part

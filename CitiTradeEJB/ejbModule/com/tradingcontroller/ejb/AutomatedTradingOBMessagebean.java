@@ -35,8 +35,10 @@ public class AutomatedTradingOBMessagebean implements MessageListener {
     public void onMessage(Message message) {
         // TODO Auto-generated method stub
     	if(message instanceof TextMessage) {
+    		
     		TextMessage textMsg = (TextMessage)message;
     		TradeObject trade = TradeMessenger.parseTradeMessage(textMsg);
+    		System.out.println("Message from OB: Trade: "+trade.getStock()+" Price: "+trade.getPrice());
     		automatedTradingController.RecordTrade(trade);
     	}
     }

@@ -50,6 +50,7 @@ public class TradingController implements ITradingController {
 		message = tradeToXML(newObj);
 
 		try {
+			
 			sendMsg(message);
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -65,6 +66,7 @@ public class TradingController implements ITradingController {
 			context = JAXBContext.newInstance(TC_ATObject.class);
 			Marshaller marshaller = context.createMarshaller ();
 			marshaller.marshal (trade, out);
+			System.out.println("[PARSING!!!!!!!!!!!!!!!!]: " +out.toString());
 			return out.toString ();
 		}
 		catch (Exception ex)

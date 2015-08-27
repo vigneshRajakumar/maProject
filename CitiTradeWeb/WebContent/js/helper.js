@@ -8,11 +8,15 @@ $(document).ready(function() {
 	} else {
 		if (username == null) {
 			 window.location.href = "index.html";
+<<<<<<< HEAD
 		} /*else {
 			var timer = setTimeout(function() {
 				getMessage();
 			  }, 10000);
 		}*/
+=======
+		}
+>>>>>>> 8fef9d0bc76fc18667841a864030b95fe55e2ac6
 	}
 	
 	$("#userProfileButton").on("click", function () {
@@ -106,6 +110,7 @@ function getUserProfile () {
 	});
 }
 
+<<<<<<< HEAD
 function getMessage () {
 	$.ajax({
 	      type: "GET",
@@ -119,6 +124,8 @@ function getMessage () {
 	});
 }
 
+=======
+>>>>>>> 8fef9d0bc76fc18667841a864030b95fe55e2ac6
 //Actions with registration form
 $(function () {
     $('.button-checkbox').each(function () {

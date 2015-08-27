@@ -67,11 +67,13 @@ public class CitiRestful {
 			@FormParam("username") String username,
 			@FormParam("password") String password) throws IOException 
     {
+
     	System.out.println("Entered login ");
     	User currentUser = userController.getUserByLogin(username, password);
     	
     	if(currentUser != null) {
     		System.out.println("Inside login : " + currentUser.getemail());
+
     		response.sendRedirect(response.encodeRedirectURL("../../auth.html?username=" + username + "&userid=" + currentUser.getUser_ID()));
     	} else {
     		System.out.println("Inside login : no user");
@@ -165,7 +167,9 @@ public class CitiRestful {
 	public User getUserProfile(@CookieParam("username") String username) {
     	//User user = userController.getUserByID(Integer.parseInt(userid));
     	User user = userController.getUserByUsername(username);
+
     	System.out.println("User details: " + user.getemail());
+
 		return user;
 	}
     
@@ -222,4 +226,5 @@ public class CitiRestful {
     	System.out.println("Inside getMessage function *********");
     	return tradingController.getMsgFromQueue();
     }
+
 }

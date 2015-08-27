@@ -35,6 +35,7 @@ public class TestAlgorithmTwoMovingAverages extends HttpServlet {
 
 
 		TC_ATObject obj = new TC_ATObject("AAPL", 33000, 55000 , 0, "Bollinger Bands");
+<<<<<<< HEAD
 
 		twoMovingAvgController.run(obj);
 		
@@ -42,6 +43,16 @@ public class TestAlgorithmTwoMovingAverages extends HttpServlet {
 
 		twoMovingAvgController.run(obj2);
 		
+=======
+				*/
+
+		ArrayList<HistoricalData> historicalDataThirtyDays = marketDataHandler.getHistoricalDataBySymbol("AAPL", year, month, dayOfMonth-5, year, month, dayOfMonth);
+
+		
+		//String symbol, int startYear,	int startMonth, int startDay, int endYear, int endMonth, int endDay);
+//		ArrayList<HistoricalData> historicalDataThirtyDays = marketDataHandler.getHistoricalDataBySymbol("AAPL", year, month, dayOfMonth-1, year, month, dayOfMonth);
+
+>>>>>>> 8fef9d0bc76fc18667841a864030b95fe55e2ac6
 		
 	}
 

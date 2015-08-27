@@ -17,9 +17,8 @@ public class StockInfoHelper {
 	// get a stock object with a given symbol
 	public Stock getStock(String symbol, Stock sto) {
 		try {
-			System.out.println("lol!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ");
+			System.out.println("[MARKET DATA HANDLER(get stock by symbol)]: " + symbol);
 			JSONObject stock_info = sendGetWithSymbol(symbol);
-			System.out.println("????!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ");
 			sto = createStock(stock_info, sto);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -30,7 +29,6 @@ public class StockInfoHelper {
 
 	// create a stock object with all the information from yahoo
 	private Stock createStock(JSONObject obj, Stock sto) {
-		System.out.println(obj.toString());
 		// if the stock is not in the database
 		if (sto == null)
 			sto = new Stock();// should query te database with the stock symbol
@@ -92,7 +90,6 @@ public class StockInfoHelper {
 			String postFix = "&env=store://datatables.org/alltableswithkeys&format=json";
 			URL _url = new URL(String.format("%sq=%s%s", BASE_URL, query,
 					postFix));
-			System.out.println(_url.toString());
 
 			HttpURLConnection con = (HttpURLConnection) _url.openConnection();
 			con.setRequestMethod("GET");
@@ -110,7 +107,7 @@ public class StockInfoHelper {
 				in.close();
 
 				// print result
-				System.out.println(response.toString());
+//				System.out.println(response.toString());
 				result = parseResponseJson(response.toString());
 			}// 200
 
@@ -127,7 +124,6 @@ public class StockInfoHelper {
 			JSONObject jsonObj = new JSONObject(respponse);
 			JSONObject result = jsonObj.getJSONObject("query").getJSONObject(
 					"results").getJSONObject("quote");
-			System.out.println(result.toString());
 			return result;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

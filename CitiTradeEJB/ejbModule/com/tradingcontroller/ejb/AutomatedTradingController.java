@@ -507,7 +507,7 @@ public class AutomatedTradingController {
 
 				}
 			}
-		}, MONITOR_TIME_INTERVAL);
+		}, 0, MONITOR_TIME_INTERVAL);
 	}
 
 	/*
@@ -553,7 +553,7 @@ public class AutomatedTradingController {
 				}
 
 			}
-		}, MONITOR_TIME_INTERVAL);
+		},0, MONITOR_TIME_INTERVAL);
 	}
 
 	public boolean isMonitoring() {
